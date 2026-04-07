@@ -273,9 +273,9 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
     <button class="btn sm" onclick="addRow()">＋ <span>종목 추가</span></button>
     <button class="btn sm ac" onclick="saveCSV()">⬇ <span>CSV 저장</span></button>
     <label class="btn sm gn" style="cursor:pointer;" title="CSV 불러오기">
-      ⬆ <span>불러오기</span>
-      <input type="file" accept=".csv" id="csvFile" style="display:none;" onchange="loadCSV(event)">
-    </label>
+  ⬆ <span>불러오기</span>
+  <input type="file" accept=".csv, text/csv, application/csv, application/vnd.ms-excel" id="csvFile" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;" onchange="loadCSV(event)">
+</label>
     <button class="btn sm dn" onclick="resetAll()">↺ <span>초기화</span></button>
   </div>
 </header>
