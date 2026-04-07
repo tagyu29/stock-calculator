@@ -281,7 +281,6 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
 </header>
 
 <main>
-  <!-- 요약 카드 -->
   <div class="cards">
     <div class="card"><div class="card-lbl">종목 수</div><div class="card-val ac" id="s-cnt">0</div></div>
     <div class="card"><div class="card-lbl">1차 투자금</div><div class="card-val" id="s-a1">-</div></div>
@@ -291,7 +290,6 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
     <div class="card"><div class="card-lbl">합산 수량</div><div class="card-val" id="s-qty">-</div></div>
   </div>
 
-  <!-- PC 테이블 뷰 -->
   <div class="sec-row">
     <div class="sec" style="margin-bottom:0;">포트폴리오</div>
   </div>
@@ -318,10 +316,8 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
     </table>
   </div>
 
-  <!-- 모바일 카드 뷰 -->
   <div class="mobile-list" id="mlist"></div>
 
-  <!-- 범례 -->
   <div class="legend">
     <div class="leg"><div class="ldot" style="background:var(--inp);border:1px solid var(--bd);"></div>직접 입력</div>
     <div class="leg"><div class="ldot" style="background:var(--sur2);border:1px solid var(--bd);"></div>자동 계산</div>
@@ -330,14 +326,13 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
     <div class="leg"><div class="ldot" style="background:var(--pu2);border:1px solid var(--pu);"></div>합산 결과</div>
   </div>
 
-  <!-- 공식 -->
   <div class="guide">
     <h3>계산 공식</h3>
     <div class="guide-grid">
-      <div class="gi"><strong>1차 4% 판매가</strong><br><code>ROUND(1차단가 × 1.04)</code><br>1차 매수단가 기준 4% 수익 목표가</div>
-      <div class="gi"><strong>2차 판매가</strong><br><code>ROUND((1+2차 총액) × 1.04 ÷ (1+2차 수량))</code><br>합산 투자금 기준 주당 4% 수익가</div>
+      <div class="gi"><strong>1차 4% 판매가</strong><br><code>ROUND(1차단가 × 1.04, -2)</code><br>1차 매수단가 기준 4% 수익 목표가 (100원 단위 반올림)</div>
+      <div class="gi"><strong>2차 판매가</strong><br><code>ROUND((1+2차 총액) × 1.04 ÷ (1+2차 수량), -2)</code><br>합산 투자금 기준 주당 4% 수익가 (100원 단위 반올림)</div>
       <div class="gi"><strong>3차 매수단가</strong><br><code>ROUND(2차단가 × 0.9)</code><br>2차 매수단가에서 10% 하락 자동 적용</div>
-      <div class="gi"><strong>3차 판매가</strong><br><code>ROUND((1+2+3차 총액) × 1.04 ÷ 전체수량)</code><br>전체 합산 투자금 기준 주당 4% 수익가</div>
+      <div class="gi"><strong>3차 판매가</strong><br><code>ROUND((1+2+3차 총액) × 1.04 ÷ 전체수량, -2)</code><br>전체 합산 투자금 기준 주당 4% 수익가 (100원 단위 반올림)</div>
     </div>
   </div>
 </main>
@@ -356,20 +351,29 @@ function toast(msg){
   setTimeout(()=>el.classList.remove('show'),2400);
 }
 
-/* ── 계산 핵심 ── */
+/* ── 계산 핵심 (100단위 반올림 적용) ── */
 function calcValues(b,c,f,g,k){
   const d   = b>0&&c>0 ? b*c : 0;
-  const e   = b>0 ? Math.round(b*1.04) : '';
+  // 1차 4% 판매가: 100원 단위 반올림
+  const e   = b>0 ? Math.round((b*1.04)/100)*100 : '';
+  
   const jv  = f>0 ? Math.round(f*0.9) : 0;
   const h   = f>0&&g>0 ? f*g : 0;
-  const i   = (f>0&&g>0&&c>0) ? Math.round((b*c+f*g)*1.04/(c+g)) : '';
+  
+  // 2차 판매가: 100원 단위 반올림
+  const i   = (f>0&&g>0&&c>0) ? Math.round(((b*c+f*g)*1.04/(c+g))/100)*100 : '';
+  
   const l   = jv>0&&k>0 ? jv*k : 0;
   const tq3 = c+(g||0)+(k||0);
   const ta3 = b*c+(f>0&&g>0?f*g:0)+(jv>0&&k>0?jv*k:0);
-  const m   = jv>0&&k>0&&tq3>0 ? Math.round(ta3*1.04/tq3) : '';
+  
+  // 3차 판매가: 100원 단위 반올림
+  const m   = jv>0&&k>0&&tq3>0 ? Math.round((ta3*1.04/tq3)/100)*100 : '';
+  
   const tq  = c+(f>0&&g>0?g:0)+(jv>0&&k>0?k:0);
   const ta  = b*c+(f>0&&g>0?f*g:0)+(jv>0&&k>0?jv*k:0);
   const avg = tq>0&&ta>0 ? Math.round(ta/tq) : '';
+  
   return {d,e,jv,h,i,l,m,tq,ta,avg};
 }
 
