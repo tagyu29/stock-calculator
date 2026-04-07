@@ -1,389 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>종목 매수 계산기</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-/* ══════════════════════════════════════
-   테마 변수
-══════════════════════════════════════ */
-:root,[data-theme="light"]{
-  --bg:#f4f6fa; --sur:#fff; --sur2:#f0f2f7; --sur3:#e8eaf2;
-  --bd:#d8dce8; --bd2:#a0aabf; /* 모바일 입력칸 테두리를 위해 더 진하게 조정 */
-  --tx:#1a1e2e; --tx2:#4a5170; --tx3:#9aa0b8; /* tx2 가독성을 위해 살짝 더 진하게 */
-  --ac:#1a63d8; --ac2:#dde9ff;
-  --gn:#1a8a4a; --gn2:#e6f8ee;
-  --am:#c47500; --am2:#fff8e6;
-  --rd:#c43030; --rd2:#fdeaea;
-  --pu:#6940d0; --pu2:#f0ebff;
-  --g1b:#1a3a7a;--g2b:#1a5276;--g3b:#1a6b3a;--g4b:#8b1a1a;--g5b:#4a2080;
-  --inp:#eef2ff; --inp2:#dde6ff; --ft:#eef2ff;
-  --mono:'JetBrains Mono',monospace; --sans:'Noto Sans KR',sans-serif;
-  --r:8px; --r2:12px;
-}
-[data-theme="dark"]{
-  --bg:#0f1117; --sur:#1a1d27; --sur2:#22263a; --sur3:#2a2f45;
-  --bd:#2e3348; --bd2:#4c5375;
-  --tx:#e8eaf0; --tx2:#a0a6bf; --tx3:#555c7a;
-  --ac:#4f8ef7; --ac2:#1e3a6e;
-  --gn:#34c77b; --gn2:#0d3320;
-  --am:#f5a623; --am2:#3a2500;
-  --rd:#e05a5a; --rd2:#3a1010;
-  --pu:#9b6dff; --pu2:#251a4a;
-  --g1b:#1e2540;--g2b:#152233;--g3b:#0d2b1c;--g4b:#2a1010;--g5b:#1e1430;
-  --inp:#1c2035; --inp2:#252a45; --ft:#1a1d27;
-}
-[data-theme="mint"]{
-  --bg:#f0faf6; --sur:#fff; --sur2:#e8f7f0; --sur3:#d8f2e8;
-  --bd:#c0e4d4; --bd2:#78bfa0;
-  --tx:#0d2b1e; --tx2:#2d5c44; --tx3:#7ab09a;
-  --ac:#0a8f5c; --ac2:#d4f2e6;
-  --gn:#068044; --gn2:#d0f0e2;
-  --am:#b86a00; --am2:#fef3e0;
-  --rd:#b83030; --rd2:#fde8e8;
-  --pu:#5e3fba; --pu2:#ece6ff;
-  --g1b:#0a4a2e;--g2b:#0d6644;--g3b:#056035;--g4b:#7a2020;--g5b:#3a2080;
-  --inp:#e4f6ed; --inp2:#d0f0e4; --ft:#e0f5ea;
-}
-
-/* ══════════════════════════════════════
-   기본 리셋
-══════════════════════════════════════ */
-*{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:14px;-webkit-tap-highlight-color:transparent;}
-body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100vh;}
-
-/* ══════════════════════════════════════
-   헤더
-══════════════════════════════════════ */
-header{
-  background:var(--sur);border-bottom:1px solid var(--bd);
-  padding:12px 16px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:200;gap:8px;
-}
-.logo{display:flex;align-items:center;gap:8px;min-width:0;}
-.logo-icon{width:30px;height:30px;background:var(--ac);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
-.logo-text{font-size:14px;font-weight:700;white-space:nowrap;}
-.logo-sub{font-size:10px;color:var(--tx2);margin-top:1px;white-space:nowrap;}
-.hdr-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
-
-/* 버튼 공통 */
-.btn{
-  padding:7px 12px;border-radius:var(--r);border:1px solid var(--bd2);
-  background:var(--sur2);color:var(--tx);font-family:var(--sans);
-  font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;
-  display:inline-flex;align-items:center;gap:5px;
-}
-.btn:hover{background:var(--sur3);}
-.btn:active{transform:scale(.97);}
-.btn.ac{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:500;}
-.btn.ac:hover{opacity:.9;}
-.btn.gn{background:var(--gn);border-color:var(--gn);color:#fff;font-weight:500;}
-.btn.gn:hover{opacity:.9;}
-.btn.dn{background:transparent;border-color:var(--rd);color:var(--rd);}
-.btn.dn:hover{background:var(--rd2);}
-.btn.sm{padding:6px 11px;font-size:12px;}
-
-/* 테마 switcher */
-.theme-wrap{display:flex;align-items:center;gap:5px;padding-right:4px;border-right:1px solid var(--bd);margin-right:2px;}
-.theme-lbl{font-size:10px;color:var(--tx2);}
-.tbtn{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .15s;}
-.tbtn:hover{transform:scale(1.2);}
-.tbtn.on{border-color:var(--tx);}
-.tbtn[data-t="light"]{background:linear-gradient(135deg,#f4f6fa 50%,#1a63d8 50%);}
-.tbtn[data-t="dark"] {background:linear-gradient(135deg,#0f1117 50%,#4f8ef7 50%);}
-.tbtn[data-t="mint"] {background:linear-gradient(135deg,#f0faf6 50%,#0a8f5c 50%);}
-
-/* ══════════════════════════════════════
-   메인
-══════════════════════════════════════ */
-main{padding:14px 16px;max-width:1600px;margin:0 auto;}
-
-/* ══════════════════════════════════════
-   요약 카드
-══════════════════════════════════════ */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px;}
-.card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r2);padding:12px 14px;}
-.card-lbl{font-size:10px;color:var(--tx2);margin-bottom:5px;font-weight:500;letter-spacing:.3px;}
-.card-val{font-size:18px;font-weight:700;font-family:var(--mono);color:var(--tx);}
-.card-val.ac{color:var(--ac);} .card-val.gn{color:var(--gn);}
-.card-val.am{color:var(--am);} .card-val.pu{color:var(--pu);}
-
-/* ══════════════════════════════════════
-   섹션 타이틀
-══════════════════════════════════════ */
-.sec-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;}
-.sec{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:1px;text-transform:uppercase;
-  display:flex;align-items:center;gap:8px;flex:1;}
-.sec::after{content:'';flex:1;height:1px;background:var(--bd);}
-
-/* ══════════════════════════════════════
-   PC 테이블 뷰
-══════════════════════════════════════ */
-.tbl-wrap{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;overflow-x:auto;}
-table{width:100%;border-collapse:collapse;min-width:1080px;}
-thead tr.grp th{font-size:11px;font-weight:700;padding:9px 8px;text-align:center;
-  letter-spacing:.5px;border-bottom:1px solid var(--bd);color:#fff;}
-th.g1{background:var(--g1b);} th.g2{background:var(--g2b);} th.g3{background:var(--g3b);}
-th.g4{background:var(--g4b);} th.g5{background:var(--g5b);}
-th.gsep{border-right:1px solid rgba(255,255,255,.2);}
-thead tr.sub th{font-size:10px;font-weight:500;color:var(--tx2);padding:6px 7px;
-  text-align:center;background:var(--sur2);border-bottom:1px solid var(--bd);line-height:1.4;white-space:nowrap;}
-thead tr.sub th.csep{border-right:1px solid var(--bd);}
-tbody tr{border-bottom:1px solid var(--bd);transition:background .1s;}
-tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:var(--sur2);}
-tbody td{padding:5px 7px;font-family:var(--mono);font-size:12px;text-align:right;color:var(--tx);}
-tbody td.csep{border-right:1px solid var(--bd);}
-tbody td.nm{text-align:left;font-family:var(--sans);font-size:12px;font-weight:500;padding-left:12px;min-width:90px;}
-tbody td.ca{background:var(--sur2);}
-tbody td.gc{color:var(--gn);background:var(--gn2);font-weight:600;}
-tbody td.ac2{color:var(--am);background:var(--am2);font-weight:600;}
-tbody td.pc{color:var(--pu);background:var(--pu2);}
-td:has(input){background:var(--inp)!important;}
-td:has(input):focus-within{background:var(--inp2)!important;outline:1px solid var(--ac);outline-offset:-1px;}
-input[type=text],input[type=number]{
-  width:100%;background:transparent;border:none;color:var(--tx);
-  font-family:var(--mono);font-size:12px;text-align:right;outline:none;padding:2px 0;}
-input.ni{font-family:var(--sans);text-align:left;font-weight:500;}
-input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-.xbtn{background:none;border:none;color:var(--tx3);cursor:pointer;font-size:13px;padding:2px 5px;transition:color .15s;}
-.xbtn:hover{color:var(--rd);}
-tfoot tr td{padding:7px 7px;font-family:var(--mono);font-size:12px;text-align:right;
-  font-weight:600;background:var(--ft)!important;color:var(--ac);border-top:1px solid var(--bd2);}
-tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left:12px;}
-
-/* ══════════════════════════════════════
-   모바일 카드 뷰 공통 베이스
-══════════════════════════════════════ */
-.mobile-list{display:none;flex-direction:column;gap:10px;}
-.m-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;}
-.m-card-hdr{
-  padding:10px 14px;display:flex;align-items:center;justify-content:space-between;
-}
-.m-hdr-nm{
-  background:transparent;border:none;color:#fff;font-family:var(--sans);
-  font-size:13px;font-weight:700;outline:none;width:calc(100% - 30px);
-}
-.m-hdr-nm::placeholder{color:rgba(255,255,255,.5);}
-.m-card-body{padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.m-field{display:flex;flex-direction:column;gap:3px;}
-.m-lbl{font-size:10px;color:var(--tx2);font-weight:500;letter-spacing:.3px;}
-.m-inp{
-  background:var(--inp);border:1px solid var(--bd);border-radius:5px;
-  padding:7px 9px;font-family:var(--mono);font-size:13px;color:var(--tx);
-  outline:none;width:100%;transition:border-color .15s;text-align:right;
-}
-.m-inp:focus{border-color:var(--ac);background:var(--inp2);}
-.m-inp::-webkit-inner-spin-button{-webkit-appearance:none;}
-.m-val{
-  background:var(--sur2);border:1px solid var(--bd);border-radius:5px;
-  padding:7px 9px;font-family:var(--mono);font-size:13px;color:var(--tx);
-  min-height:34px;text-align:right;
-}
-.m-val.gn{color:var(--gn);background:var(--gn2);border-color:var(--gn2);}
-.m-val.am{color:var(--am);background:var(--am2);border-color:var(--am2);}
-.m-val.pu{color:var(--pu);background:var(--pu2);border-color:var(--pu2);}
-.m-sep{grid-column:1/-1;height:1px;background:var(--bd);margin:2px 0;}
-.m-sec-lbl{
-  grid-column:1/-1;font-size:10px;font-weight:700;color:#fff;
-  letter-spacing:.8px;padding:5px 8px;border-radius:4px;margin-top:2px;
-}
-
-/* ══════════════════════════════════════
-   범례
-══════════════════════════════════════ */
-.legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;padding:10px 14px;
-  background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);}
-.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--tx2);}
-.ldot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
-
-/* ══════════════════════════════════════
-   계산 공식
-══════════════════════════════════════ */
-.guide{margin-top:14px;background:var(--sur);border:1px solid var(--bd);border-radius:var(--r2);padding:14px 18px;}
-.guide h3{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
-.guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;}
-.gi{font-size:11px;line-height:1.7;color:var(--tx2);}
-.gi strong{color:var(--tx);font-weight:600;}
-.gi code{font-family:var(--mono);font-size:10px;background:var(--sur2);padding:1px 5px;border-radius:3px;color:var(--ac);}
-
-/* ══════════════════════════════════════
-   자동저장 표시
-══════════════════════════════════════ */
-.autosave-badge{
-  font-size:10px;color:var(--tx3);display:flex;align-items:center;gap:4px;
-  padding:4px 8px;background:var(--sur2);border-radius:10px;border:1px solid var(--bd);
-}
-
-/* ══════════════════════════════════════
-   토스트
-══════════════════════════════════════ */
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:var(--tx);color:var(--bg);padding:10px 20px;border-radius:20px;
-  font-size:13px;font-weight:500;z-index:999;transition:transform .3s,opacity .3s;
-  opacity:0;white-space:nowrap;pointer-events:none;
-}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-
-/* ══════════════════════════════════════
-   모바일 전용 최적화 가독성 개선 (이 부분 대폭 수정)
-══════════════════════════════════════ */
-@media(max-width:767px){
-  header{padding:10px 12px;}
-  .logo-sub{display:none;}
-  .btn span{display:none;}
-  .btn.sm{padding:7px 10px;}
-  main{padding:10px 12px;}
-  .tbl-wrap{display:none;}
-  .mobile-list{display:flex;}
-  .cards{grid-template-columns:repeat(3,1fr);}
-  .card{padding:10px 10px;}
-  .card-val{font-size:14px;}
-  .autosave-badge span{display:none;}
-  
-  /* 1. 모바일 종목명(헤더) 시인성 강화 */
-  .m-hdr-nm {
-    font-size: 16px !important; 
-    font-weight: 800 !important;
-    color: #ffffff !important; /* 강제 흰색 글씨 */
-    background: rgba(255, 255, 255, 0.15) !important; /* 입력칸임을 알 수 있는 배경 */
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 6px !important;
-    padding: 6px 10px !important;
-  }
-  .m-hdr-nm::placeholder { color: rgba(255,255,255,0.7) !important; }
-  
-  /* 2. 모바일 입력칸(단가, 수량) 테두리 두껍게 및 폰트 강화 */
-  .m-inp {
-    font-size: 15px !important; /* 숫자 크기 키움 */
-    font-weight: 700 !important; /* 숫자 두껍게 */
-    border: 1.5px solid var(--bd2) !important; /* 테두리 두껍고 선명하게 */
-    background: var(--sur) !important; /* 텍스트와 분리되는 밝은 배경 */
-    padding: 10px 12px !important; /* 터치 영역 및 여백 확보 */
-    border-radius: 6px !important;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03) !important;
-  }
-  .m-inp:focus {
-    border-color: var(--ac) !important;
-    box-shadow: 0 0 0 2px var(--ac2) !important;
-  }
-
-  /* 3. 모바일 결과값 칸 폰트 크기 동기화 */
-  .m-val {
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    padding: 10px 12px !important;
-    min-height: 40px !important;
-  }
-
-  /* 4. 항목명 라벨 진하게 변경 */
-  .m-lbl {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: var(--tx) !important; /* 회색 대신 완전 진한 색상으로 */
-    margin-bottom: 5px !important;
-  }
-  
-  .m-field { gap: 4px !important; margin-bottom: 6px !important; }
-}
-@media(max-width:480px){
-  .cards{grid-template-columns:repeat(2,1fr);}
-  .hdr-right{gap:4px;}
-}
-</style>
-</head>
-<body>
-
-<header>
-  <div class="logo">
-    <div class="logo-icon">📈</div>
-    <div>
-      <div class="logo-text">종목 매수 계산기</div>
-      <div class="logo-sub">1차 · 2차 · 3차 매수 수익 시뮬레이터</div>
-    </div>
-  </div>
-  <div class="hdr-right">
-    <div class="theme-wrap">
-      <span class="theme-lbl">테마</span>
-      <button class="tbtn" data-t="light" onclick="setTheme('light')" title="라이트"></button>
-      <button class="tbtn" data-t="dark"  onclick="setTheme('dark')"  title="다크"></button>
-      <button class="tbtn" data-t="mint"  onclick="setTheme('mint')"  title="민트"></button>
-    </div>
-    <div class="autosave-badge" id="save-badge">💾 <span>자동저장됨</span></div>
-    <button class="btn sm" onclick="addRow()">＋ <span>종목 추가</span></button>
-    <button class="btn sm ac" onclick="saveCSV()">⬇ <span>CSV 저장</span></button>
-    <label class="btn sm gn" style="cursor:pointer;" title="CSV 불러오기">
-      ⬆ <span>불러오기</span>
-      <input type="file" accept=".csv, text/csv, application/csv, application/vnd.ms-excel" id="csvFile" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;" onchange="loadCSV(event)">
-    </label>
-    <button class="btn sm dn" onclick="resetAll()">↺ <span>초기화</span></button>
-  </div>
-</header>
-
-<main>
-  <div class="cards">
-    <div class="card"><div class="card-lbl">종목 수</div><div class="card-val ac" id="s-cnt">0</div></div>
-    <div class="card"><div class="card-lbl">1차 투자금</div><div class="card-val" id="s-a1">-</div></div>
-    <div class="card"><div class="card-lbl">2차 투자금</div><div class="card-val gn" id="s-a2">-</div></div>
-    <div class="card"><div class="card-lbl">3차 투자금</div><div class="card-val am" id="s-a3">-</div></div>
-    <div class="card"><div class="card-lbl">전체 합산</div><div class="card-val pu" id="s-tot">-</div></div>
-    <div class="card"><div class="card-lbl">합산 수량</div><div class="card-val" id="s-qty">-</div></div>
-  </div>
-
-  <div class="sec-row">
-    <div class="sec" style="margin-bottom:0;">포트폴리오</div>
-  </div>
-  <div class="tbl-wrap">
-    <table id="tbl">
-      <thead>
-        <tr class="grp">
-          <th class="g1 gsep" rowspan="2" style="min-width:90px;">종목명</th>
-          <th class="g2 gsep" colspan="4">1차 매수</th>
-          <th class="g3 gsep" colspan="4">2차 매수</th>
-          <th class="g4 gsep" colspan="4">3차 매수</th>
-          <th class="g5"      colspan="3">합산 결과</th>
-          <th class="g1" rowspan="2" style="width:32px;"></th>
-        </tr>
-        <tr class="sub">
-          <th>매수단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="csep">4%판매가(원)</th>
-          <th>매수단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="csep">판매가(원)</th>
-          <th style="font-size:9px;">매수단가<br>(2차×90%)</th><th>수량(주)</th><th>총액(원)</th><th class="csep">판매가(원)</th>
-          <th>합산수량</th><th>합산총액</th><th>평균단가</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-      <tfoot id="tfoot"></tfoot>
-    </table>
-  </div>
-
-  <div class="mobile-list" id="mlist"></div>
-
-  <div class="legend">
-    <div class="leg"><div class="ldot" style="background:var(--inp);border:1px solid var(--bd);"></div>직접 입력</div>
-    <div class="leg"><div class="ldot" style="background:var(--sur2);border:1px solid var(--bd);"></div>자동 계산</div>
-    <div class="leg"><div class="ldot" style="background:var(--am2);border:1px solid var(--am);"></div>3차단가 자동 (2차×90%)</div>
-    <div class="leg"><div class="ldot" style="background:var(--gn2);border:1px solid var(--gn);"></div>4% 수익 목표가</div>
-    <div class="leg"><div class="ldot" style="background:var(--pu2);border:1px solid var(--pu);"></div>합산 결과</div>
-  </div>
-
-  <div class="guide">
-    <h3>계산 공식</h3>
-    <div class="guide-grid">
-      <div class="gi"><strong>1차 4% 판매가</strong><br><code>ROUND(1차단가 × 1.04, -2)</code><br>1차 매수단가 기준 4% 수익 목표가 (100원 단위 반올림)</div>
-      <div class="gi"><strong>2차 판매가</strong><br><code>ROUND((1+2차 총액) × 1.04 ÷ (1+2차 수량), -2)</code><br>합산 투자금 기준 주당 4% 수익가 (100원 단위 반올림)</div>
-      <div class="gi"><strong>3차 매수단가</strong><br><code>ROUND(2차단가 × 0.9)</code><br>2차 매수단가에서 10% 하락 자동 적용</div>
-      <div class="gi"><strong>3차 판매가</strong><br><code>ROUND((1+2+3차 총액) × 1.04 ÷ 전체수량, -2)</code><br>전체 합산 투자금 기준 주당 4% 수익가 (100원 단위 반올림)</div>
-    </div>
-  </div>
-</main>
-
-<div class="toast" id="toast"></div>
-
 <script>
 const fmt = n => (!n||isNaN(n)) ? '' : Math.round(n).toLocaleString('ko-KR');
 const unf = s => parseFloat((s+'').replace(/,/g,''))||0;
@@ -394,6 +8,12 @@ function toast(msg){
   const el=document.getElementById('toast');
   el.textContent=msg; el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+/* ── 입력 필드 콤마 자동 포맷팅 (신규) ── */
+function formatInput(el) {
+  let val = String(el.value).replace(/[^0-9]/g, '');
+  el.value = val === '' ? '' : Number(val).toLocaleString('ko-KR');
 }
 
 /* ── 계산 핵심 (100단위 반올림 적용) ── */
@@ -426,16 +46,16 @@ function addRow(data){
   const tr=document.createElement('tr'); tr.id='row-'+id;
   tr.innerHTML=`
     <td class="nm csep"><input type="text" class="ni" placeholder="종목명" id="nm${id}" oninput="onNamePC(${id})"></td>
-    <td><input type="number" id="b${id}" placeholder="0" oninput="calc(${id})"></td>
-    <td><input type="number" id="c${id}" placeholder="0" oninput="calc(${id})"></td>
+    <td><input type="text" inputmode="numeric" id="b${id}" placeholder="0" oninput="formatInput(this); calc(${id})"></td>
+    <td><input type="text" inputmode="numeric" id="c${id}" placeholder="0" oninput="formatInput(this); calc(${id})"></td>
     <td class="ca" id="d${id}"></td>
     <td class="gc csep" id="e${id}"></td>
-    <td><input type="number" id="f${id}" placeholder="0" oninput="calc(${id})"></td>
-    <td><input type="number" id="g${id}" placeholder="0" oninput="calc(${id})"></td>
+    <td><input type="text" inputmode="numeric" id="f${id}" placeholder="0" oninput="formatInput(this); calc(${id})"></td>
+    <td><input type="text" inputmode="numeric" id="g${id}" placeholder="0" oninput="formatInput(this); calc(${id})"></td>
     <td class="ca" id="h${id}"></td>
     <td class="gc csep" id="i${id}"></td>
     <td class="ac2" id="j${id}"></td>
-    <td><input type="number" id="k${id}" placeholder="0" oninput="calc(${id})"></td>
+    <td><input type="text" inputmode="numeric" id="k${id}" placeholder="0" oninput="formatInput(this); calc(${id})"></td>
     <td class="ca" id="l${id}"></td>
     <td class="gc csep" id="m${id}"></td>
     <td class="pc" id="n${id}"></td>
@@ -451,11 +71,19 @@ function addRow(data){
 
 function applyData(id,data){
   const set=(f,v)=>{const el=document.getElementById(f+id);if(el&&v!=null&&v!=='')el.value=v;};
+  const format=(f)=>{const el=document.getElementById(f+id);if(el&&el.value) formatInput(el);};
+
   set('nm',data.name); set('b',data.b); set('c',data.c);
   set('f',data.f); set('g',data.g); set('k',data.k);
+  ['b','c','f','g','k'].forEach(format);
+
   const mset=(f,v)=>{const el=document.getElementById('m'+f+id);if(el&&v!=null&&v!=='')el.value=v;};
+  const mformat=(f)=>{const el=document.getElementById('m'+f+id);if(el&&el.value) formatInput(el);};
+
   mset('nm',data.name); mset('b',data.b); mset('c',data.c);
   mset('f',data.f); mset('g',data.g); mset('k',data.k);
+  ['b','c','f','g','k'].forEach(mformat);
+
   const mhdr=document.getElementById('mhdr-nm'+id);
   if(mhdr&&data.name) mhdr.value=data.name;
   calc(id);
@@ -473,24 +101,24 @@ function addMCard(id){
     <div class="m-card-body">
       <div class="m-sec-lbl" style="background:var(--g2b);">1차 매수</div>
       <div class="m-field"><div class="m-lbl">매수단가 (원)</div>
-        <input type="number" class="m-inp" id="mb${id}" placeholder="0" oninput="syncMob('b',${id})"></div>
+        <input type="text" inputmode="numeric" class="m-inp" id="mb${id}" placeholder="0" oninput="formatInput(this); syncMob('b',${id})"></div>
       <div class="m-field"><div class="m-lbl">수량 (주)</div>
-        <input type="number" class="m-inp" id="mc${id}" placeholder="0" oninput="syncMob('c',${id})"></div>
+        <input type="text" inputmode="numeric" class="m-inp" id="mc${id}" placeholder="0" oninput="formatInput(this); syncMob('c',${id})"></div>
       <div class="m-field"><div class="m-lbl">총액 (원)</div><div class="m-val" id="md${id}"></div></div>
       <div class="m-field"><div class="m-lbl">4% 판매가 (원)</div><div class="m-val gn" id="me${id}"></div></div>
       <div class="m-sep"></div>
       <div class="m-sec-lbl" style="background:var(--g3b);">2차 매수</div>
       <div class="m-field"><div class="m-lbl">매수단가 (원)</div>
-        <input type="number" class="m-inp" id="mf${id}" placeholder="0" oninput="syncMob('f',${id})"></div>
+        <input type="text" inputmode="numeric" class="m-inp" id="mf${id}" placeholder="0" oninput="formatInput(this); syncMob('f',${id})"></div>
       <div class="m-field"><div class="m-lbl">수량 (주)</div>
-        <input type="number" class="m-inp" id="mg${id}" placeholder="0" oninput="syncMob('g',${id})"></div>
+        <input type="text" inputmode="numeric" class="m-inp" id="mg${id}" placeholder="0" oninput="formatInput(this); syncMob('g',${id})"></div>
       <div class="m-field"><div class="m-lbl">총액 (원)</div><div class="m-val" id="mh${id}"></div></div>
       <div class="m-field"><div class="m-lbl">판매가 (원)</div><div class="m-val gn" id="mi${id}"></div></div>
       <div class="m-sep"></div>
       <div class="m-sec-lbl" style="background:var(--g4b);">3차 매수</div>
       <div class="m-field"><div class="m-lbl">매수단가 (2차×90%)</div><div class="m-val am" id="mj${id}"></div></div>
       <div class="m-field"><div class="m-lbl">수량 (주)</div>
-        <input type="number" class="m-inp" id="mk${id}" placeholder="0" oninput="syncMob('k',${id})"></div>
+        <input type="text" inputmode="numeric" class="m-inp" id="mk${id}" placeholder="0" oninput="formatInput(this); syncMob('k',${id})"></div>
       <div class="m-field"><div class="m-lbl">총액 (원)</div><div class="m-val" id="ml${id}"></div></div>
       <div class="m-field"><div class="m-lbl">판매가 (원)</div><div class="m-val gn" id="mm${id}"></div></div>
       <div class="m-sep"></div>
@@ -606,8 +234,8 @@ function saveCSV(){
     const b=document.getElementById('b'+id)?.value||'';
     if(!nm&&!b) return;
     const gv=f=>document.getElementById(f+id)?.textContent.replace(/,/g,'')||'';
-    const iv=f=>document.getElementById(f+id)?.value||'';
-    lines.push([nm,b,iv('c'),gv('d'),gv('e'),iv('f'),iv('g'),gv('h'),gv('i'),
+    const iv=f=>(document.getElementById(f+id)?.value||'').replace(/,/g,''); // CSV 구조 오류 방지 (콤마 제거)
+    lines.push([nm,iv('b'),iv('c'),gv('d'),gv('e'),iv('f'),iv('g'),gv('h'),gv('i'),
                 gv('j'),iv('k'),gv('l'),gv('m'),gv('n'),gv('o'),gv('p')].join(','));
   });
   const blob=new Blob(['\uFEFF'+lines.join('\n')],{type:'text/csv;charset=utf-8;'});
@@ -657,13 +285,11 @@ function autoSave(){
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>{
     try{
+      const getVal=f=>(document.getElementById(f+id)?.value||'').replace(/,/g,''); // 로컬 저장용 콤마 제거 처리
       const data=rowIds.filter(id=>document.getElementById('row-'+id)).map(id=>({
         name:document.getElementById('nm'+id)?.value||'',
-        b:document.getElementById('b'+id)?.value||'',
-        c:document.getElementById('c'+id)?.value||'',
-        f:document.getElementById('f'+id)?.value||'',
-        g:document.getElementById('g'+id)?.value||'',
-        k:document.getElementById('k'+id)?.value||'',
+        b:getVal('b'), c:getVal('c'), f:getVal('f'),
+        g:getVal('g'), k:getVal('k'),
       }));
       localStorage.setItem('smc_data',JSON.stringify(data));
       const badge=document.getElementById('save-badge');
@@ -703,5 +329,3 @@ if(!loadSaved()){
 }
 updateSummary();
 </script>
-</body>
-</html>
