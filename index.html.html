@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>종목 매수 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ── 테마 1: 다크 (기본) ── */
+:root, [data-theme="dark"] {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #22263a;
+  --border: #2e3348;
+  --border2: #3d4260;
+  --text: #e8eaf0;
+  --text2: #8b90a8;
+  --text3: #555c7a;
+  --accent: #4f8ef7;
+  --accent-dim: #1e3a6e;
+  --green: #34c77b;
+  --green-dim: #0d3320;
+  --amber: #f5a623;
+  --amber-dim: #3a2500;
+  --red: #e05a5a;
+  --red-dim: #3a1010;
+  --purple: #9b6dff;
+  --purple-dim: #251a4a;
+  --teal: #2dd4bf;
+  --teal-dim: #0a2e2a;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans KR', sans-serif;
+  --r: 8px; --r2: 12px;
+  --g1-bg:#1e2540; --g1-c:#4f8ef7;
+  --g2-bg:#152233; --g2-c:#5bb3f5;
+  --g3-bg:#0d2b1c; --g3-c:#34c77b;
+  --g4-bg:#2a1010; --g4-c:#e05a5a;
+  --g5-bg:#1e1430; --g5-c:#9b6dff;
+  --inp-bg:#1c2035; --inp-focus:#252a45;
+  --foot-bg:#1a1d27;
+}
+/* ── 테마 2: 라이트 ── */
+[data-theme="light"] {
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface2: #f0f2f7;
+  --border: #d8dce8;
+  --border2: #bec4d8;
+  --text: #1a1e2e;
+  --text2: #5a6180;
+  --text3: #9aa0b8;
+  --accent: #1a63d8;
+  --accent-dim: #dde9ff;
+  --green: #1a8a4a;
+  --green-dim: #e6f8ee;
+  --amber: #c47500;
+  --amber-dim: #fff8e6;
+  --red: #c43030;
+  --red-dim: #fdeaea;
+  --purple: #6940d0;
+  --purple-dim: #f0ebff;
+  --teal: #0a9080;
+  --teal-dim: #e4f8f6;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans KR', sans-serif;
+  --r: 8px; --r2: 12px;
+  --g1-bg:#1a3a7a; --g1-c:#ffffff;
+  --g2-bg:#1a5276; --g2-c:#ffffff;
+  --g3-bg:#1a6b3a; --g3-c:#ffffff;
+  --g4-bg:#8b1a1a; --g4-c:#ffffff;
+  --g5-bg:#4a2080; --g5-c:#ffffff;
+  --inp-bg:#eef2ff; --inp-focus:#dde6ff;
+  --foot-bg:#eef2ff;
+}
+/* ── 테마 3: 민트/그린 ── */
+[data-theme="mint"] {
+  --bg: #f0faf6;
+  --surface: #ffffff;
+  --surface2: #e8f7f0;
+  --border: #c0e4d4;
+  --border2: #90ccb4;
+  --text: #0d2b1e;
+  --text2: #3a6e54;
+  --text3: #7ab09a;
+  --accent: #0a8f5c;
+  --accent-dim: #d4f2e6;
+  --green: #068044;
+  --green-dim: #d0f0e2;
+  --amber: #b86a00;
+  --amber-dim: #fef3e0;
+  --red: #b83030;
+  --red-dim: #fde8e8;
+  --purple: #5e3fba;
+  --purple-dim: #ece6ff;
+  --teal: #0a7a70;
+  --teal-dim: #d8f4f2;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Noto Sans KR', sans-serif;
+  --r: 8px; --r2: 12px;
+  --g1-bg:#0a4a2e; --g1-c:#ffffff;
+  --g2-bg:#0d6644; --g2-c:#ffffff;
+  --g3-bg:#056035; --g3-c:#ffffff;
+  --g4-bg:#7a2020; --g4-c:#ffffff;
+  --g5-bg:#3a2080; --g5-c:#ffffff;
+  --inp-bg:#e4f6ed; --inp-focus:#d0f0e4;
+  --foot-bg:#e0f5ea;
+}
+
+/* 기본 및 PC 공통 스타일 */
+th.g1 { background: var(--g1-bg) !important; color: var(--g1-c) !important; }
+th.g2 { background: var(--g2-bg) !important; color: var(--g2-c) !important; }
+th.g3 { background: var(--g3-bg) !important; color: var(--g3-c) !important; }
+th.g4 { background: var(--g4-bg) !important; color: var(--g4-c) !important; }
+th.g5 { background: var(--g5-bg) !important; color: var(--g5-c) !important; }
+td:has(input) { background: var(--inp-bg); }
+td:has(input):focus-within { background: var(--inp-focus); outline: 1px solid var(--accent); outline-offset: -1px; }
+tfoot tr td { background: var(--foot-bg); }
+
+.theme-switcher { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.theme-btn { width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:all .15s; }
+.theme-btn:hover { transform:scale(1.15); }
+.theme-btn.active { border-color: var(--text); }
+.theme-btn[data-t="dark"]  { background: linear-gradient(135deg,#0f1117 50%,#4f8ef7 50%); }
+.theme-btn[data-t="light"] { background: linear-gradient(135deg,#f4f6fa 50%,#1a63d8 50%); }
+.theme-btn[data-t="mint"]  { background: linear-gradient(135deg,#f0faf6 50%,#0a8f5c 50%); }
+.theme-label { font-size:11px; color:var(--text2); margin-right:4px; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+
+header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 32px; height: 32px; background: var(--accent); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.logo-text { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+.logo-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+
+.btn {
+  padding: 7px 12px; border-radius: var(--r); border: 1px solid var(--border2);
+  background: var(--surface2); color: var(--text); font-family: var(--sans);
+  font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.btn:hover { background: var(--border); border-color: var(--border2); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+.btn.primary:hover { background: #3a7ae0; }
+.btn.danger { background: transparent; border-color: var(--red); color: var(--red); }
+.btn.danger:hover { background: var(--red-dim); }
+
+main { padding: 20px 24px; max-width: 1600px; margin: 0 auto; width: 100%; }
+
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px 16px; }
+.card-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.3px; }
+.card-value { font-size: 20px; font-weight: 700; font-family: var(--mono); color: var(--text); word-break: break-all; }
+.card-value.green { color: var(--green); }
+.card-value.amber { color: var(--amber); }
+.card-value.accent { color: var(--accent); }
+.card-value.purple { color: var(--purple); }
+
+.section-title { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── PC TABLE SECTION ── */
+.tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+
+thead tr.grp th { font-size: 11px; font-weight: 700; padding: 9px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+th.g1, th.g2, th.g3, th.g4 { border-right: 1px solid var(--border); }
+thead tr.sub th { font-size: 10px; font-weight: 500; color: var(--text2); padding: 7px 8px; text-align: center; background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+thead tr.sub th.sep { border-right: 1px solid var(--border); }
+
+tbody tr { transition: background .1s; }
+tbody tr td { border-bottom: 1px solid var(--border); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface2); }
+
+tbody td { padding: 5px 7px; font-family: var(--mono); font-size: 12px; text-align: right; color: var(--text); }
+tbody td.sep { border-right: 1px solid var(--border); }
+tbody td.name-cell { text-align: left; font-family: var(--sans); font-size: 12px; font-weight: 500; padding-left: 14px; min-width: 120px; }
+tbody td.act { background: var(--surface2); }
+tbody td.green-cell { color: var(--green); background: var(--green-dim); font-weight: 600; }
+tbody td.amber-cell { color: var(--amber); background: var(--amber-dim); font-weight: 600; }
+tbody td.purple-cell { color: var(--purple); background: var(--purple-dim); }
+tbody td.red-cell { color: var(--red); background: var(--red-dim); font-size:10px; }
+
+input[type=text] { width: 100%; background: transparent; border: none; color: var(--text); font-family: var(--mono); font-size: 12px; text-align: right; outline: none; padding: 2px 0; min-height: 24px; }
+input[type=text].name-inp { font-family: var(--sans); text-align: left; font-weight: 500; }
+
+.del-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 4px; transition: color .15s; min-width: 24px; }
+.del-btn:hover { color: var(--red); }
+
+tfoot tr td { padding: 10px 7px; font-family: var(--mono); font-size: 12px; text-align: right; font-weight: 600; background: var(--surface2) !important; color: var(--accent); border-top: 1px solid var(--border2); }
+tfoot tr td.name-cell { font-family: var(--sans); color: var(--text2); font-size: 11px; padding-left:14px; }
+tfoot tr td.sep { border-right: 1px solid var(--border); }
+
+/* ── LEGEND & GUIDE ── */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); }
+.leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+.leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.guide { margin-top: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; }
+.guide h3 { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 12px; }
+.guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.guide-item { font-size: 11px; line-height: 1.7; color: var(--text2); }
+.guide-item strong { color: var(--text); font-weight: 600; }
+.guide-item code { font-family: var(--mono); font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 3px; color: var(--accent); }
+
+/* ── MOBILE RESPONSIVE (세로형 카드 레이아웃) ── */
+@media(max-width: 768px) {
+  header { flex-direction: column; align-items: flex-start; gap: 14px; padding: 14px 16px; }
+  .header-right { width: 100%; display: flex; overflow-x: auto; padding-bottom: 4px; gap: 8px; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .header-right::-webkit-scrollbar { display: none; }
+  
+  main { padding: 16px 12px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .card { padding: 12px; }
+  .card-value { font-size: 16px; }
+
+  /* 테이블 속성 초기화 및 블록화 */
+  .tbl-wrap { border: none; background: transparent; overflow: hidden; }
+  table, thead, tbody, th, td, tr { display: block; width: 100%; min-width: auto; }
+  
+  /* 테이블 헤더/푸터 모바일에서 숨김 */
+  thead, tfoot { display: none; }
+
+  /* 개별 행(Row)을 카드(Card) 스타일로 변경 */
+  tbody tr {
+    margin-bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r2);
+    padding: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  /* 셀(Cell)을 세로 리스트 형태로 배치 */
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    border-right: none !important; /* PC용 세로 구분선 제거 */
+  }
+  tbody td:last-child { border-bottom: none; }
+
+  /* data-label 속성을 이용해 항목명 표시 */
+  tbody td::before {
+    content: attr(data-label);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: left;
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+
+  /* 카드 내 입력창 최적화 */
+  td:has(input) { background: transparent !important; }
+  input[type=text] {
+    width: 65%; /* 입력창 너비 고정 */
+    background: var(--inp-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px; /* iOS 자동 확대 방지 */
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  input[type=text].name-inp { width: 100%; text-align: right; }
+
+  /* 모바일 가독성을 위한 시각적 그룹 분리 (상단 테두리 부여) */
+  td[data-label="[1차] 매수단가"], 
+  td[data-label="[2차] 매수단가"], 
+  td[data-label="[3차] 자동단가"], 
+  td[data-label="[합산] 총 수량"] {
+    border-top: 2px solid var(--border2);
+    margin-top: 8px;
+    padding-top: 14px;
+  }
+  
+  /* 삭제 버튼 크게 배치 */
+  .del-btn {
+    width: 100%;
+    background: var(--red-dim);
+    color: var(--red);
+    border-radius: var(--r);
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📈</div>
+    <div>
+      <div class="logo-text">종목 매수 계산기</div>
+      <div class="logo-sub">1차 · 2차 · 3차 매수 수익 시뮬레이터</div>
+    </div>
+  </div>
+  <div class="header-right">
+      <div class="theme-switcher">
+        <span class="theme-label">테마</span>
+        <button class="theme-btn" data-t="dark"  onclick="setTheme('dark')"  title="다크"></button>
+        <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="라이트"></button>
+        <button class="theme-btn" data-t="mint"  onclick="setTheme('mint')"  title="민트"></button>
+      </div>
+    <button class="btn" onclick="addRow()">+ 추가</button>
+    <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="loadCSV(event)">
+    <button class="btn" onclick="document.getElementById('csv-file').click()">불러오기</button>
+    <button class="btn primary" onclick="saveCSV()">저장</button>
+    <button class="btn danger" onclick="resetAll()">초기화</button>
+  </div>
+</header>
+
+<main>
+  <div class="summary-grid" id="summary-grid">
+    <div class="card"><div class="card-label">종목 수</div><div class="card-value accent" id="s-count">0</div></div>
+    <div class="card"><div class="card-label">1차 총 투자금</div><div class="card-value" id="s-amt1">-</div></div>
+    <div class="card"><div class="card-label">2차 총 투자금</div><div class="card-value green" id="s-amt2">-</div></div>
+    <div class="card"><div class="card-label">3차 총 투자금</div><div class="card-value amber" id="s-amt3">-</div></div>
+    <div class="card"><div class="card-label">전체 합산 투자금</div><div class="card-value purple" id="s-total">-</div></div>
+    <div class="card"><div class="card-label">전체 합산 수량</div><div class="card-value" id="s-qty">-</div></div>
+  </div>
+
+  <div class="section-title">포트폴리오 입력</div>
+
+  <div class="tbl-wrap">
+    <table id="tbl">
+      <thead>
+        <tr class="grp">
+          <th class="g1" rowspan="2">종목명</th>
+          <th class="g2" colspan="4">1차 매수</th>
+          <th class="g3" colspan="4">2차 매수</th>
+          <th class="g4" colspan="4">3차 매수</th>
+          <th class="g5" colspan="3">합산 결과</th>
+          <th class="g1" rowspan="2" style="width:40px;">관리</th>
+        </tr>
+        <tr class="sub">
+          <th>단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">4%판매가</th>
+          <th>단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가</th>
+          <th>자동단가</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가</th>
+          <th>합산수량</th><th>합산총액</th><th>평균단가</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+      <tfoot id="tfoot"></tfoot>
+    </table>
+  </div>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#1c2035;border:1px solid var(--accent);"></div>직접 입력 셀</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--surface2);"></div>자동 계산</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--amber-dim);border:1px solid var(--amber);"></div>3차단가 자동 (2차×90%)</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--green-dim);border:1px solid var(--green);"></div>수익 목표가 (4% 반올림)</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--purple-dim);border:1px solid var(--purple);"></div>합산 결과</div>
+  </div>
+
+  <div class="guide">
+    <h3>계산 공식</h3>
+    <div class="guide-grid">
+      <div class="guide-item">
+        <strong>1차 4% 판매가</strong><br>
+        <code>ROUND(1차단가 × 1.04)</code>
+      </div>
+      <div class="guide-item">
+        <strong>2차 판매가</strong><br>
+        <code>ROUND((1차+2차총액) × 1.04 ÷ (1차+2차수량))</code>
+      </div>
+      <div class="guide-item">
+        <strong>3차 매수단가</strong><br>
+        <code>ROUND(2차단가 × 0.9)</code>
+      </div>
+      <div class="guide-item">
+        <strong>3차 판매가</strong><br>
+        <code>ROUND(전체총액 × 1.04 ÷ 전체수량)</code>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const fmt = n => (n===''||n===null||isNaN(n)||n===0) ? '' : Math.round(n).toLocaleString('ko-KR');
+const unf = s => parseFloat((s+'').replace(/,/g,''))||0;
+
+let uid = 0;
+let rowIds = [];
+
+function formatInput(el, id) {
+  let val = el.value.replace(/,/g, '');
+  val = val.replace(/[^0-9.]/g, ''); 
+  let parts = val.split('.');
+  if (parts[0] !== '') {
+    parts[0] = parseInt(parts[0], 10).toLocaleString('ko-KR');
+  }
+  if (parts.length > 1) {
+    el.value = parts[0] + '.' + parts.slice(1).join('');
+  } else {
+    el.value = parts[0];
+  }
+  calc(id);
+}
+
+function addRow(data) {
+  const id = uid++;
+  rowIds.push(id);
+  const tb = document.getElementById('tbody');
+  const tr = document.createElement('tr');
+  tr.id = 'row-'+id;
+  
+  // 모든 td에 모바일 표시용 data-label 속성 추가
+  tr.innerHTML = `
+    <td class="name-cell sep" data-label="📌 종목명"><input type="text" class="name-inp" placeholder="종목명 입력" id="name${id}"></td>
+    <td data-label="[1차] 매수단가"><input type="text" id="b${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td data-label="[1차] 매수수량"><input type="text" id="c${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act" id="d${id}" data-label="[1차] 총액(원)"></td>
+    <td class="green-cell sep" id="e${id}" data-label="[1차] 4% 수익 목표가"></td>
+    
+    <td data-label="[2차] 매수단가"><input type="text" id="f${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td data-label="[2차] 매수수량"><input type="text" id="g${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act" id="h${id}" data-label="[2차] 총액(원)"></td>
+    <td class="green-cell sep" id="i${id}" data-label="[2차] 합산 4% 목표가"></td>
+    
+    <td class="amber-cell" id="j${id}" data-label="[3차] 자동단가(2차 90%)"></td>
+    <td data-label="[3차] 매수수량"><input type="text" id="k${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act red-cell" id="l${id}" data-label="[3차] 총액(원)"></td>
+    <td class="green-cell sep" id="m${id}" data-label="[3차] 합산 4% 목표가"></td>
+    
+    <td class="purple-cell" id="n${id}" data-label="[합산] 총 수량(주)"></td>
+    <td class="purple-cell" id="o${id}" data-label="[합산] 총 투자금(원)"></td>
+    <td class="purple-cell" id="p${id}" data-label="[합산] 평균단가(원)"></td>
+    
+    <td style="text-align:center; border-left:none;" data-label="">
+      <button class="del-btn" onclick="delRow(${id})" title="삭제">✕ 이 종목 삭제</button>
+    </td>
+  `;
+  tb.appendChild(tr);
+  if (data) {
+    if (data.name) document.getElementById('name'+id).value = data.name;
+    if (data.b) document.getElementById('b'+id).value = fmt(data.b);
+    if (data.c) document.getElementById('c'+id).value = fmt(data.c);
+    if (data.f) document.getElementById('f'+id).value = fmt(data.f);
+    if (data.g) document.getElementById('g'+id).value = fmt(data.g);
+    if (data.k) document.getElementById('k'+id).value = fmt(data.k);
+    calc(id);
+  }
+}
+
+function delRow(id) {
+  const el = document.getElementById('row-'+id);
+  if (el) el.remove();
+  rowIds = rowIds.filter(r => r !== id);
+  updateSummary();
+}
+
+function calc(id) {
+  const b = unf(document.getElementById('b'+id)?.value);
+  const c = unf(document.getElementById('c'+id)?.value);
+  const f = unf(document.getElementById('f'+id)?.value);
+  const g = unf(document.getElementById('g'+id)?.value);
+  const k = unf(document.getElementById('k'+id)?.value);
+
+  const d = b > 0 && c > 0 ? b * c : 0;
+  const e = b > 0 ? Math.round(b * 1.04) : '';
+  document.getElementById('d'+id).textContent = fmt(d);
+  document.getElementById('e'+id).textContent = e !== '' ? fmt(e) : '';
+
+  const j_val = f > 0 ? Math.round(f * 0.9) : 0;
+  document.getElementById('j'+id).textContent = j_val > 0 ? fmt(j_val) : '';
+  const h = f > 0 && g > 0 ? f * g : 0;
+  const i = (f > 0 && g > 0 && c > 0) ? Math.round((b * c + f * g) * 1.04 / (c + g)) : '';
+  document.getElementById('h'+id).textContent = fmt(h);
+  document.getElementById('i'+id).textContent = i !== '' ? fmt(i) : '';
+
+  const l = j_val > 0 && k > 0 ? j_val * k : 0;
+  const total_qty3 = c + (g || 0) + (k || 0);
+  const total_amt3 = b * c + (f > 0 && g > 0 ? f * g : 0) + (j_val > 0 && k > 0 ? j_val * k : 0);
+  const m = j_val > 0 && k > 0 && total_qty3 > 0 ? Math.round(total_amt3 * 1.04 / total_qty3) : '';
+  document.getElementById('l'+id).textContent = l > 0 ? fmt(l) : '';
+  document.getElementById('m'+id).textContent = m !== '' ? fmt(m) : '';
+
+  const tot_q = c + (f > 0 && g > 0 ? g : 0) + (j_val > 0 && k > 0 ? k : 0);
+  const tot_a = b * c + (f > 0 && g > 0 ? f * g : 0) + (j_val > 0 && k > 0 ? j_val * k : 0);
+  const avg   = tot_q > 0 && tot_a > 0 ? Math.round(tot_a / tot_q) : '';
+  document.getElementById('n'+id).textContent = tot_q > 0 ? fmt(tot_q) : '';
+  document.getElementById('o'+id).textContent = tot_a > 0 ? fmt(tot_a) : '';
+  document.getElementById('p'+id).textContent = avg !== '' ? fmt(avg) : '';
+
+  updateSummary();
+}
+
+function updateSummary() {
+  let cnt = 0, a1 = 0, a2 = 0, a3 = 0, totQ = 0, totA = 0;
+  rowIds.forEach(id => {
+    if (!document.getElementById('row-'+id)) return;
+    const b = unf(document.getElementById('b'+id)?.value);
+    const c = unf(document.getElementById('c'+id)?.value);
+    const f = unf(document.getElementById('f'+id)?.value);
+    const g = unf(document.getElementById('g'+id)?.value);
+    const k = unf(document.getElementById('k'+id)?.value);
+    const j = f > 0 ? Math.round(f * 0.9) : 0;
+    if (b > 0 && c > 0) cnt++;
+    a1  += b * c;
+    a2  += f > 0 && g > 0 ? f * g : 0;
+    a3  += j > 0 && k > 0 ? j * k : 0;
+    totQ += c + (f>0&&g>0?g:0) + (j>0&&k>0?k:0);
+    totA += b*c + (f>0&&g>0?f*g:0) + (j>0&&k>0?j*k:0);
+  });
+
+  document.getElementById('s-count').textContent = cnt;
+  document.getElementById('s-amt1').textContent  = a1  > 0 ? fmt(a1)  + '원' : '-';
+  document.getElementById('s-amt2').textContent  = a2  > 0 ? fmt(a2)  + '원' : '-';
+  document.getElementById('s-amt3').textContent  = a3  > 0 ? fmt(a3)  + '원' : '-';
+  document.getElementById('s-total').textContent = totA> 0 ? fmt(totA) + '원' : '-';
+  document.getElementById('s-qty').textContent   = totQ> 0 ? fmt(totQ) + '주' : '-';
+
+  const tf = document.getElementById('tfoot');
+  tf.innerHTML = `<tr>
+    <td class="name-cell sep" style="color:var(--text2);">합 계</td>
+    <td></td><td></td><td>${fmt(a1)}</td><td class="sep"></td>
+    <td></td><td></td><td>${fmt(a2)}</td><td class="sep"></td>
+    <td></td><td></td><td>${fmt(a3)}</td><td class="sep"></td>
+    <td>${fmt(totQ)}</td><td>${fmt(totA)}</td><td></td><td></td>
+  </tr>`;
+}
+
+function resetAll() {
+  if (!confirm('전체 데이터를 초기화합니까?')) return;
+  rowIds = []; uid = 0;
+  document.getElementById('tbody').innerHTML = '';
+  document.getElementById('tfoot').innerHTML = '';
+  addRow();
+  updateSummary();
+}
+
+function saveCSV() {
+  const headers = ['종목명','1차단가','1차수량','1차총액','1차판매가','2차단가','2차수량','2차총액','2차판매가','3차단가','3차수량','3차총액','3차판매가','합산수량','합산총액','평균단가'];
+  const rows = [headers.join(',')];
+  rowIds.forEach(id => {
+    if (!document.getElementById('row-'+id)) return;
+    const name = document.getElementById('name'+id)?.value || '';
+    const b = document.getElementById('b'+id)?.value.replace(/,/g,'') || '';
+    const c = document.getElementById('c'+id)?.value.replace(/,/g,'') || '';
+    const d = document.getElementById('d'+id)?.textContent.replace(/,/g,'') || '';
+    const e = document.getElementById('e'+id)?.textContent.replace(/,/g,'') || '';
+    const f = document.getElementById('f'+id)?.value.replace(/,/g,'') || '';
+    const g = document.getElementById('g'+id)?.value.replace(/,/g,'') || '';
+    const h = document.getElementById('h'+id)?.textContent.replace(/,/g,'') || '';
+    const i = document.getElementById('i'+id)?.textContent.replace(/,/g,'') || '';
+    const j = document.getElementById('j'+id)?.textContent.replace(/,/g,'') || '';
+    const k = document.getElementById('k'+id)?.value.replace(/,/g,'') || '';
+    const l = document.getElementById('l'+id)?.textContent.replace(/,/g,'') || '';
+    const m = document.getElementById('m'+id)?.textContent.replace(/,/g,'') || '';
+    const n = document.getElementById('n'+id)?.textContent.replace(/,/g,'') || '';
+    const o = document.getElementById('o'+id)?.textContent.replace(/,/g,'') || '';
+    const p = document.getElementById('p'+id)?.textContent.replace(/,/g,'') || '';
+    
+    if (name || b) rows.push([name,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p].join(','));
+  });
+  const blob = new Blob(['\uFEFF'+rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '종목매수계산기_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+function loadCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const content = text.replace(/^\uFEFF/, '');
+    const lines = content.split(/\r\n|\n/).filter(line => line.trim() !== '');
+
+    if (lines.length > 1) {
+      rowIds = []; uid = 0; document.getElementById('tbody').innerHTML = '';
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',');
+        const name = cols[0] || ''; const b = cols[1] || ''; const c = cols[2] || '';
+        const f = cols[5] || ''; const g = cols[6] || ''; const k = cols[10] || '';
+        addRow({name, b, c, f, g, k});
+      }
+      updateSummary();
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+addRow();
+
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('theme', t);
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-t') === t);
+  });
+}
+setTheme(localStorage.getItem('theme') || 'light');
+</script>
+</body>
+</html>
