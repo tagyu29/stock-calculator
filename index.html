@@ -106,58 +106,48 @@
   --inp-bg:#e4f6ed; --inp-focus:#d0f0e4;
   --foot-bg:#e0f5ea;
 }
-/* 테마별 그룹 헤더 */
+
+/* 기본 및 PC 공통 스타일 */
 th.g1 { background: var(--g1-bg) !important; color: var(--g1-c) !important; }
 th.g2 { background: var(--g2-bg) !important; color: var(--g2-c) !important; }
 th.g3 { background: var(--g3-bg) !important; color: var(--g3-c) !important; }
 th.g4 { background: var(--g4-bg) !important; color: var(--g4-c) !important; }
 th.g5 { background: var(--g5-bg) !important; color: var(--g5-c) !important; }
-td:has(input) { background: var(--inp-bg) !important; }
-td:has(input):focus-within { background: var(--inp-focus) !important; outline: 1px solid var(--accent); outline-offset: -1px; }
-tfoot tr td { background: var(--foot-bg) !important; }
-/* 테마 switcher UI */
-.theme-switcher { display:flex; align-items:center; gap:6px; }
-.theme-btn {
-  width:22px; height:22px; border-radius:50%; border:2px solid transparent;
-  cursor:pointer; transition:all .15s; position:relative;
-}
+td:has(input) { background: var(--inp-bg); }
+td:has(input):focus-within { background: var(--inp-focus); outline: 1px solid var(--accent); outline-offset: -1px; }
+tfoot tr td { background: var(--foot-bg); }
+
+.theme-switcher { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.theme-btn { width:22px; height:22px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:all .15s; }
 .theme-btn:hover { transform:scale(1.15); }
 .theme-btn.active { border-color: var(--text); }
 .theme-btn[data-t="dark"]  { background: linear-gradient(135deg,#0f1117 50%,#4f8ef7 50%); }
 .theme-btn[data-t="light"] { background: linear-gradient(135deg,#f4f6fa 50%,#1a63d8 50%); }
 .theme-btn[data-t="mint"]  { background: linear-gradient(135deg,#f0faf6 50%,#0a8f5c 50%); }
 .theme-label { font-size:11px; color:var(--text2); margin-right:4px; }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 14px; }
-body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
 
-/* ── HEADER ── */
 header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 16px 24px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
 }
 .logo { display: flex; align-items: center; gap: 10px; }
 .logo-icon {
-  width: 32px; height: 32px;
-  background: var(--accent);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
+  width: 32px; height: 32px; background: var(--accent); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
 }
 .logo-text { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
 .logo-sub { font-size: 11px; color: var(--text2); margin-top: 1px; }
 .header-right { display: flex; align-items: center; gap: 8px; }
+
 .btn {
-  padding: 7px 14px; border-radius: var(--r); border: 1px solid var(--border2);
+  padding: 7px 12px; border-radius: var(--r); border: 1px solid var(--border2);
   background: var(--surface2); color: var(--text); font-family: var(--sans);
-  font-size: 12px; cursor: pointer; transition: all .15s;
+  font-size: 12px; cursor: pointer; transition: all .15s; white-space: nowrap;
 }
 .btn:hover { background: var(--border); border-color: var(--border2); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
@@ -165,151 +155,150 @@ header {
 .btn.danger { background: transparent; border-color: var(--red); color: var(--red); }
 .btn.danger:hover { background: var(--red-dim); }
 
-/* ── MAIN ── */
-main { padding: 20px 24px; max-width: 1600px; margin: 0 auto; }
+main { padding: 20px 24px; max-width: 1600px; margin: 0 auto; width: 100%; }
 
-/* ── SUMMARY CARDS ── */
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  padding: 14px 16px;
-}
+.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px 16px; }
 .card-label { font-size: 11px; color: var(--text2); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.3px; }
-.card-value { font-size: 20px; font-weight: 700; font-family: var(--mono); color: var(--text); }
+.card-value { font-size: 20px; font-weight: 700; font-family: var(--mono); color: var(--text); word-break: break-all; }
 .card-value.green { color: var(--green); }
 .card-value.amber { color: var(--amber); }
 .card-value.accent { color: var(--accent); }
 .card-value.purple { color: var(--purple); }
 
-/* ── TABLE SECTION ── */
-.section-title {
-  font-size: 12px; font-weight: 700; color: var(--text2);
-  letter-spacing: 1px; text-transform: uppercase;
-  margin-bottom: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.section-title::after {
-  content: ''; flex: 1; height: 1px; background: var(--border);
-}
+.section-title { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-.tbl-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r2);
-  overflow: hidden;
-  overflow-x: auto;
-}
-table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+/* ── PC TABLE SECTION ── */
+.tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; min-width: 1200px; }
 
-/* group header */
-thead tr.grp th {
-  font-size: 11px; font-weight: 700; padding: 9px 8px;
-  text-align: center; letter-spacing: 0.5px;
-  border-bottom: 1px solid var(--border);
-}
-th.g1 { border-right: 1px solid var(--border); }
-th.g2 { border-right: 1px solid var(--border); }
-th.g3 { border-right: 1px solid var(--border); }
-th.g4 { border-right: 1px solid var(--border); }
-th.g5 { }
-
-/* sub header */
-thead tr.sub th {
-  font-size: 10px; font-weight: 500; color: var(--text2);
-  padding: 7px 8px; text-align: center;
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  line-height: 1.4;
-  white-space: nowrap;
-}
+thead tr.grp th { font-size: 11px; font-weight: 700; padding: 9px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+th.g1, th.g2, th.g3, th.g4 { border-right: 1px solid var(--border); }
+thead tr.sub th { font-size: 10px; font-weight: 500; color: var(--text2); padding: 7px 8px; text-align: center; background: var(--surface2); border-bottom: 1px solid var(--border); white-space: nowrap; }
 thead tr.sub th.sep { border-right: 1px solid var(--border); }
 
-/* body */
-tbody tr {
-  border-bottom: 1px solid var(--border);
-  transition: background .1s;
-}
-tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--surface2); }
-tbody td {
-  padding: 5px 7px;
-  font-family: var(--mono);
-  font-size: 12px;
-  text-align: right;
-  color: var(--text);
-}
+tbody tr { transition: background .1s; }
+tbody tr td { border-bottom: 1px solid var(--border); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface2); }
+
+tbody td { padding: 5px 7px; font-family: var(--mono); font-size: 12px; text-align: right; color: var(--text); }
 tbody td.sep { border-right: 1px solid var(--border); }
-tbody td.name-cell {
-  text-align: left; font-family: var(--sans);
-  font-size: 12px; font-weight: 500;
-  padding-left: 14px; min-width: 100px;
-}
+tbody td.name-cell { text-align: left; font-family: var(--sans); font-size: 12px; font-weight: 500; padding-left: 14px; min-width: 120px; }
 tbody td.act { background: var(--surface2); }
 tbody td.green-cell { color: var(--green); background: var(--green-dim); font-weight: 600; }
 tbody td.amber-cell { color: var(--amber); background: var(--amber-dim); font-weight: 600; }
 tbody td.purple-cell { color: var(--purple); background: var(--purple-dim); }
 tbody td.red-cell { color: var(--red); background: var(--red-dim); font-size:10px; }
 
-/* inputs */
-input[type=text], input[type=number] {
-  width: 100%; background: transparent; border: none;
-  color: var(--text); font-family: var(--mono); font-size: 12px;
-  text-align: right; outline: none; padding: 2px 0;
-}
+input[type=text] { width: 100%; background: transparent; border: none; color: var(--text); font-family: var(--mono); font-size: 12px; text-align: right; outline: none; padding: 2px 0; min-height: 24px; }
 input[type=text].name-inp { font-family: var(--sans); text-align: left; font-weight: 500; }
 
-/* delete btn */
-.del-btn {
-  background: none; border: none; color: var(--text3);
-  cursor: pointer; font-size: 14px; padding: 2px 4px;
-  transition: color .15s;
-}
+.del-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 4px; transition: color .15s; min-width: 24px; }
 .del-btn:hover { color: var(--red); }
 
-/* footer/sum row */
-tfoot tr td {
-  padding: 8px 7px; font-family: var(--mono); font-size: 12px;
-  text-align: right; font-weight: 600;
-  background: var(--surface2); color: var(--accent);
-  border-top: 1px solid var(--border2);
-}
+tfoot tr td { padding: 10px 7px; font-family: var(--mono); font-size: 12px; text-align: right; font-weight: 600; background: var(--surface2) !important; color: var(--accent); border-top: 1px solid var(--border2); }
 tfoot tr td.name-cell { font-family: var(--sans); color: var(--text2); font-size: 11px; padding-left:14px; }
 tfoot tr td.sep { border-right: 1px solid var(--border); }
 
-/* ── LEGEND ── */
-.legend {
-  display: flex; flex-wrap: wrap; gap: 14px;
-  margin-top: 14px; padding: 12px 16px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r);
-}
+/* ── LEGEND & GUIDE ── */
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); }
 .leg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
 .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-
-/* ── GUIDE ── */
-.guide {
-  margin-top: 20px; background: var(--surface);
-  border: 1px solid var(--border); border-radius: var(--r2);
-  padding: 16px 20px;
-}
-.guide h3 { font-size: 12px; font-weight: 700; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+.guide { margin-top: 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px 20px; }
+.guide h3 { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 12px; }
 .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
 .guide-item { font-size: 11px; line-height: 1.7; color: var(--text2); }
 .guide-item strong { color: var(--text); font-weight: 600; }
 .guide-item code { font-family: var(--mono); font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 3px; color: var(--accent); }
 
-/* ── RESPONSIVE ── */
-@media(max-width: 600px) {
-  main { padding: 12px; }
-  header { padding: 12px 14px; }
-  .logo-sub { display: none; }
+/* ── MOBILE RESPONSIVE (세로형 카드 레이아웃) ── */
+@media(max-width: 768px) {
+  header { flex-direction: column; align-items: flex-start; gap: 14px; padding: 14px 16px; }
+  .header-right { width: 100%; display: flex; overflow-x: auto; padding-bottom: 4px; gap: 8px; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .header-right::-webkit-scrollbar { display: none; }
+  
+  main { padding: 16px 12px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .card { padding: 12px; }
+  .card-value { font-size: 16px; }
+
+  /* 테이블 속성 초기화 및 블록화 */
+  .tbl-wrap { border: none; background: transparent; overflow: hidden; }
+  table, thead, tbody, th, td, tr { display: block; width: 100%; min-width: auto; }
+  
+  /* 테이블 헤더/푸터 모바일에서 숨김 */
+  thead, tfoot { display: none; }
+
+  /* 개별 행(Row)을 카드(Card) 스타일로 변경 */
+  tbody tr {
+    margin-bottom: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r2);
+    padding: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  /* 셀(Cell)을 세로 리스트 형태로 배치 */
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    border-right: none !important; /* PC용 세로 구분선 제거 */
+  }
+  tbody td:last-child { border-bottom: none; }
+
+  /* data-label 속성을 이용해 항목명 표시 */
+  tbody td::before {
+    content: attr(data-label);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    text-align: left;
+    flex-shrink: 0;
+    margin-right: 15px;
+  }
+
+  /* 카드 내 입력창 최적화 */
+  td:has(input) { background: transparent !important; }
+  input[type=text] {
+    width: 65%; /* 입력창 너비 고정 */
+    background: var(--inp-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px; /* iOS 자동 확대 방지 */
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  input[type=text].name-inp { width: 100%; text-align: right; }
+
+  /* 모바일 가독성을 위한 시각적 그룹 분리 (상단 테두리 부여) */
+  td[data-label="[1차] 매수단가"], 
+  td[data-label="[2차] 매수단가"], 
+  td[data-label="[3차] 자동단가"], 
+  td[data-label="[합산] 총 수량"] {
+    border-top: 2px solid var(--border2);
+    margin-top: 8px;
+    padding-top: 14px;
+  }
+  
+  /* 삭제 버튼 크게 배치 */
+  .del-btn {
+    width: 100%;
+    background: var(--red-dim);
+    color: var(--red);
+    border-radius: var(--r);
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
 }
 </style>
 </head>
@@ -330,10 +319,10 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
         <button class="theme-btn" data-t="light" onclick="setTheme('light')" title="라이트"></button>
         <button class="theme-btn" data-t="mint"  onclick="setTheme('mint')"  title="민트"></button>
       </div>
-    <button class="btn" onclick="addRow()">+ 종목 추가</button>
+    <button class="btn" onclick="addRow()">+ 추가</button>
     <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="loadCSV(event)">
-    <button class="btn" onclick="document.getElementById('csv-file').click()">CSV 불러오기</button>
-    <button class="btn primary" onclick="saveCSV()">CSV 저장</button>
+    <button class="btn" onclick="document.getElementById('csv-file').click()">불러오기</button>
+    <button class="btn primary" onclick="saveCSV()">저장</button>
     <button class="btn danger" onclick="resetAll()">초기화</button>
   </div>
 </header>
@@ -354,17 +343,17 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
     <table id="tbl">
       <thead>
         <tr class="grp">
-          <th class="g1" rowspan="2" style="min-width:100px;border-right:1px solid var(--border);">종목명</th>
+          <th class="g1" rowspan="2">종목명</th>
           <th class="g2" colspan="4">1차 매수</th>
           <th class="g3" colspan="4">2차 매수</th>
           <th class="g4" colspan="4">3차 매수</th>
           <th class="g5" colspan="3">합산 결과</th>
-          <th class="g1" rowspan="2" style="width:36px;border-left:1px solid var(--border);"></th>
+          <th class="g1" rowspan="2" style="width:40px;">관리</th>
         </tr>
         <tr class="sub">
-          <th>매수단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">4%판매가(원)</th>
-          <th>매수단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가(원)</th>
-          <th style="font-size:9px;">매수단가<br>(2차×90%)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가(원)</th>
+          <th>단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">4%판매가</th>
+          <th>단가(원)</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가</th>
+          <th>자동단가</th><th>수량(주)</th><th>총액(원)</th><th class="sep">판매가</th>
           <th>합산수량</th><th>합산총액</th><th>평균단가</th>
         </tr>
       </thead>
@@ -386,23 +375,19 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
     <div class="guide-grid">
       <div class="guide-item">
         <strong>1차 4% 판매가</strong><br>
-        <code>ROUND(1차단가 × 1.04)</code><br>
-        1차 매수단가 기준 4% 수익 목표가
+        <code>ROUND(1차단가 × 1.04)</code>
       </div>
       <div class="guide-item">
         <strong>2차 판매가</strong><br>
-        <code>ROUND((1차총액 + 2차총액) × 1.04 ÷ (1차+2차수량))</code><br>
-        합산 투자금 기준 주당 4% 수익가
+        <code>ROUND((1차+2차총액) × 1.04 ÷ (1차+2차수량))</code>
       </div>
       <div class="guide-item">
         <strong>3차 매수단가</strong><br>
-        <code>ROUND(2차단가 × 0.9)</code><br>
-        2차 매수단가에서 10% 하락 자동 적용
+        <code>ROUND(2차단가 × 0.9)</code>
       </div>
       <div class="guide-item">
         <strong>3차 판매가</strong><br>
-        <code>ROUND((1+2+3차 총액) × 1.04 ÷ 전체수량)</code><br>
-        전체 합산 투자금 기준 주당 4% 수익가
+        <code>ROUND(전체총액 × 1.04 ÷ 전체수량)</code>
       </div>
     </div>
   </div>
@@ -410,23 +395,18 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
 
 <script>
 const fmt = n => (n===''||n===null||isNaN(n)||n===0) ? '' : Math.round(n).toLocaleString('ko-KR');
-// 기존 문자열에서 콤마를 제거한 후 순수 숫자로 변환
 const unf = s => parseFloat((s+'').replace(/,/g,''))||0;
 
 let uid = 0;
 let rowIds = [];
 
-// 입력 시 실시간 콤마 포맷팅 처리 함수
 function formatInput(el, id) {
-  let val = el.value.replace(/,/g, ''); // 기존 콤마 제거
-  val = val.replace(/[^0-9.]/g, ''); // 숫자 및 소수점만 남김 (문자 방지)
-  
+  let val = el.value.replace(/,/g, '');
+  val = val.replace(/[^0-9.]/g, ''); 
   let parts = val.split('.');
   if (parts[0] !== '') {
-    parts[0] = parseInt(parts[0], 10).toLocaleString('ko-KR'); // 정수부 콤마 처리
+    parts[0] = parseInt(parts[0], 10).toLocaleString('ko-KR');
   }
-  
-  // 소수점이 있을 경우 재결합
   if (parts.length > 1) {
     el.value = parts[0] + '.' + parts.slice(1).join('');
   } else {
@@ -441,32 +421,36 @@ function addRow(data) {
   const tb = document.getElementById('tbody');
   const tr = document.createElement('tr');
   tr.id = 'row-'+id;
-  // 기존 type="number" 대신 type="text"를 사용하여 콤마를 허용하도록 수정
+  
+  // 모든 td에 모바일 표시용 data-label 속성 추가
   tr.innerHTML = `
-    <td class="name-cell sep"><input type="text" class="name-inp" placeholder="종목명 입력" id="name${id}"></td>
-    <td><input type="text" id="b${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
-    <td><input type="text" id="c${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
-    <td class="act" id="d${id}"></td>
-    <td class="green-cell sep" id="e${id}"></td>
-    <td><input type="text" id="f${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
-    <td><input type="text" id="g${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
-    <td class="act" id="h${id}"></td>
-    <td class="green-cell sep" id="i${id}"></td>
-    <td class="amber-cell" id="j${id}"></td>
-    <td><input type="text" id="k${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
-    <td class="act red-cell" id="l${id}"></td>
-    <td class="green-cell sep" id="m${id}"></td>
-    <td class="purple-cell" id="n${id}"></td>
-    <td class="purple-cell" id="o${id}"></td>
-    <td class="purple-cell" id="p${id}"></td>
-    <td style="text-align:center;padding:0 4px;border-left:1px solid var(--border);">
-      <button class="del-btn" onclick="delRow(${id})" title="삭제">✕</button>
+    <td class="name-cell sep" data-label="📌 종목명"><input type="text" class="name-inp" placeholder="종목명 입력" id="name${id}"></td>
+    <td data-label="[1차] 매수단가"><input type="text" id="b${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td data-label="[1차] 매수수량"><input type="text" id="c${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act" id="d${id}" data-label="[1차] 총액(원)"></td>
+    <td class="green-cell sep" id="e${id}" data-label="[1차] 4% 수익 목표가"></td>
+    
+    <td data-label="[2차] 매수단가"><input type="text" id="f${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td data-label="[2차] 매수수량"><input type="text" id="g${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act" id="h${id}" data-label="[2차] 총액(원)"></td>
+    <td class="green-cell sep" id="i${id}" data-label="[2차] 합산 4% 목표가"></td>
+    
+    <td class="amber-cell" id="j${id}" data-label="[3차] 자동단가(2차 90%)"></td>
+    <td data-label="[3차] 매수수량"><input type="text" id="k${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
+    <td class="act red-cell" id="l${id}" data-label="[3차] 총액(원)"></td>
+    <td class="green-cell sep" id="m${id}" data-label="[3차] 합산 4% 목표가"></td>
+    
+    <td class="purple-cell" id="n${id}" data-label="[합산] 총 수량(주)"></td>
+    <td class="purple-cell" id="o${id}" data-label="[합산] 총 투자금(원)"></td>
+    <td class="purple-cell" id="p${id}" data-label="[합산] 평균단가(원)"></td>
+    
+    <td style="text-align:center; border-left:none;" data-label="">
+      <button class="del-btn" onclick="delRow(${id})" title="삭제">✕ 이 종목 삭제</button>
     </td>
   `;
   tb.appendChild(tr);
   if (data) {
     if (data.name) document.getElementById('name'+id).value = data.name;
-    // 불러오기 시 데이터를 삽입할 때 콤마 추가 적용
     if (data.b) document.getElementById('b'+id).value = fmt(data.b);
     if (data.c) document.getElementById('c'+id).value = fmt(data.c);
     if (data.f) document.getElementById('f'+id).value = fmt(data.f);
@@ -484,20 +468,17 @@ function delRow(id) {
 }
 
 function calc(id) {
-  // unf() 함수를 통해 콤마가 포함된 문자열을 순수 숫자로 변환하여 계산
   const b = unf(document.getElementById('b'+id)?.value);
   const c = unf(document.getElementById('c'+id)?.value);
   const f = unf(document.getElementById('f'+id)?.value);
   const g = unf(document.getElementById('g'+id)?.value);
   const k = unf(document.getElementById('k'+id)?.value);
 
-  // 1차
   const d = b > 0 && c > 0 ? b * c : 0;
   const e = b > 0 ? Math.round(b * 1.04) : '';
   document.getElementById('d'+id).textContent = fmt(d);
   document.getElementById('e'+id).textContent = e !== '' ? fmt(e) : '';
 
-  // 2차
   const j_val = f > 0 ? Math.round(f * 0.9) : 0;
   document.getElementById('j'+id).textContent = j_val > 0 ? fmt(j_val) : '';
   const h = f > 0 && g > 0 ? f * g : 0;
@@ -505,7 +486,6 @@ function calc(id) {
   document.getElementById('h'+id).textContent = fmt(h);
   document.getElementById('i'+id).textContent = i !== '' ? fmt(i) : '';
 
-  // 3차
   const l = j_val > 0 && k > 0 ? j_val * k : 0;
   const total_qty3 = c + (g || 0) + (k || 0);
   const total_amt3 = b * c + (f > 0 && g > 0 ? f * g : 0) + (j_val > 0 && k > 0 ? j_val * k : 0);
@@ -513,7 +493,6 @@ function calc(id) {
   document.getElementById('l'+id).textContent = l > 0 ? fmt(l) : '';
   document.getElementById('m'+id).textContent = m !== '' ? fmt(m) : '';
 
-  // 합산
   const tot_q = c + (f > 0 && g > 0 ? g : 0) + (j_val > 0 && k > 0 ? k : 0);
   const tot_a = b * c + (f > 0 && g > 0 ? f * g : 0) + (j_val > 0 && k > 0 ? j_val * k : 0);
   const avg   = tot_q > 0 && tot_a > 0 ? Math.round(tot_a / tot_q) : '';
@@ -549,20 +528,13 @@ function updateSummary() {
   document.getElementById('s-total').textContent = totA> 0 ? fmt(totA) + '원' : '-';
   document.getElementById('s-qty').textContent   = totQ> 0 ? fmt(totQ) + '주' : '-';
 
-  // foot
   const tf = document.getElementById('tfoot');
   tf.innerHTML = `<tr>
-    <td class="name-cell sep" style="font-family:var(--sans);color:var(--text2);font-size:11px;">합 계</td>
-    <td></td><td></td>
-    <td>${fmt(a1)}</td><td class="sep"></td>
-    <td></td><td></td>
-    <td>${fmt(a2)}</td><td class="sep"></td>
-    <td></td><td></td>
-    <td>${fmt(a3)}</td><td class="sep"></td>
-    <td>${fmt(totQ)}</td>
-    <td>${fmt(totA)}</td>
-    <td></td>
-    <td></td>
+    <td class="name-cell sep" style="color:var(--text2);">합 계</td>
+    <td></td><td></td><td>${fmt(a1)}</td><td class="sep"></td>
+    <td></td><td></td><td>${fmt(a2)}</td><td class="sep"></td>
+    <td></td><td></td><td>${fmt(a3)}</td><td class="sep"></td>
+    <td>${fmt(totQ)}</td><td>${fmt(totA)}</td><td></td><td></td>
   </tr>`;
 }
 
@@ -581,8 +553,6 @@ function saveCSV() {
   rowIds.forEach(id => {
     if (!document.getElementById('row-'+id)) return;
     const name = document.getElementById('name'+id)?.value || '';
-    
-    // 입력 필드(b, c, f, g, k)에 찍혀있는 콤마를 제거하여 CSV 정합성 유지
     const b = document.getElementById('b'+id)?.value.replace(/,/g,'') || '';
     const c = document.getElementById('c'+id)?.value.replace(/,/g,'') || '';
     const d = document.getElementById('d'+id)?.textContent.replace(/,/g,'') || '';
@@ -619,19 +589,11 @@ function loadCSV(event) {
     const lines = content.split(/\r\n|\n/).filter(line => line.trim() !== '');
 
     if (lines.length > 1) {
-      rowIds = [];
-      uid = 0;
-      document.getElementById('tbody').innerHTML = '';
-      
+      rowIds = []; uid = 0; document.getElementById('tbody').innerHTML = '';
       for (let i = 1; i < lines.length; i++) {
         const cols = lines[i].split(',');
-        const name = cols[0] || '';
-        const b = cols[1] || '';
-        const c = cols[2] || '';
-        const f = cols[5] || '';
-        const g = cols[6] || '';
-        const k = cols[10] || '';
-
+        const name = cols[0] || ''; const b = cols[1] || ''; const c = cols[2] || '';
+        const f = cols[5] || ''; const g = cols[6] || ''; const k = cols[10] || '';
         addRow({name, b, c, f, g, k});
       }
       updateSummary();
@@ -641,10 +603,8 @@ function loadCSV(event) {
   reader.readAsText(file, 'utf-8');
 }
 
-// 초기 데이터 설정
 addRow();
 
-// 테마
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('theme', t);
@@ -652,8 +612,7 @@ function setTheme(t) {
     btn.classList.toggle('active', btn.getAttribute('data-t') === t);
   });
 }
-const savedTheme = localStorage.getItem('theme') || 'light';
-setTheme(savedTheme);
+setTheme(localStorage.getItem('theme') || 'light');
 </script>
 </body>
 </html>
