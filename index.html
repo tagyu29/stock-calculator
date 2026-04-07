@@ -11,8 +11,8 @@
 ══════════════════════════════════════ */
 :root,[data-theme="light"]{
   --bg:#f4f6fa; --sur:#fff; --sur2:#f0f2f7; --sur3:#e8eaf2;
-  --bd:#d8dce8; --bd2:#bec4d8;
-  --tx:#1a1e2e; --tx2:#5a6180; --tx3:#9aa0b8;
+  --bd:#d8dce8; --bd2:#a0aabf; /* 모바일 입력칸 테두리를 위해 더 진하게 조정 */
+  --tx:#1a1e2e; --tx2:#4a5170; --tx3:#9aa0b8; /* tx2 가독성을 위해 살짝 더 진하게 */
   --ac:#1a63d8; --ac2:#dde9ff;
   --gn:#1a8a4a; --gn2:#e6f8ee;
   --am:#c47500; --am2:#fff8e6;
@@ -25,8 +25,8 @@
 }
 [data-theme="dark"]{
   --bg:#0f1117; --sur:#1a1d27; --sur2:#22263a; --sur3:#2a2f45;
-  --bd:#2e3348; --bd2:#3d4260;
-  --tx:#e8eaf0; --tx2:#8b90a8; --tx3:#555c7a;
+  --bd:#2e3348; --bd2:#4c5375;
+  --tx:#e8eaf0; --tx2:#a0a6bf; --tx3:#555c7a;
   --ac:#4f8ef7; --ac2:#1e3a6e;
   --gn:#34c77b; --gn2:#0d3320;
   --am:#f5a623; --am2:#3a2500;
@@ -37,8 +37,8 @@
 }
 [data-theme="mint"]{
   --bg:#f0faf6; --sur:#fff; --sur2:#e8f7f0; --sur3:#d8f2e8;
-  --bd:#c0e4d4; --bd2:#90ccb4;
-  --tx:#0d2b1e; --tx2:#3a6e54; --tx3:#7ab09a;
+  --bd:#c0e4d4; --bd2:#78bfa0;
+  --tx:#0d2b1e; --tx2:#2d5c44; --tx3:#7ab09a;
   --ac:#0a8f5c; --ac2:#d4f2e6;
   --gn:#068044; --gn2:#d0f0e2;
   --am:#b86a00; --am2:#fef3e0;
@@ -157,7 +157,7 @@ tfoot tr td{padding:7px 7px;font-family:var(--mono);font-size:12px;text-align:ri
 tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left:12px;}
 
 /* ══════════════════════════════════════
-   모바일 카드 뷰 (≤ 767px)
+   모바일 카드 뷰 공통 베이스
 ══════════════════════════════════════ */
 .mobile-list{display:none;flex-direction:column;gap:10px;}
 .m-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;}
@@ -231,7 +231,7 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
 
 /* ══════════════════════════════════════
-   반응형 분기
+   모바일 전용 최적화 가독성 개선 (이 부분 대폭 수정)
 ══════════════════════════════════════ */
 @media(max-width:767px){
   header{padding:10px 12px;}
@@ -245,6 +245,51 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
   .card{padding:10px 10px;}
   .card-val{font-size:14px;}
   .autosave-badge span{display:none;}
+  
+  /* 1. 모바일 종목명(헤더) 시인성 강화 */
+  .m-hdr-nm {
+    font-size: 16px !important; 
+    font-weight: 800 !important;
+    color: #ffffff !important; /* 강제 흰색 글씨 */
+    background: rgba(255, 255, 255, 0.15) !important; /* 입력칸임을 알 수 있는 배경 */
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 6px !important;
+    padding: 6px 10px !important;
+  }
+  .m-hdr-nm::placeholder { color: rgba(255,255,255,0.7) !important; }
+  
+  /* 2. 모바일 입력칸(단가, 수량) 테두리 두껍게 및 폰트 강화 */
+  .m-inp {
+    font-size: 15px !important; /* 숫자 크기 키움 */
+    font-weight: 700 !important; /* 숫자 두껍게 */
+    border: 1.5px solid var(--bd2) !important; /* 테두리 두껍고 선명하게 */
+    background: var(--sur) !important; /* 텍스트와 분리되는 밝은 배경 */
+    padding: 10px 12px !important; /* 터치 영역 및 여백 확보 */
+    border-radius: 6px !important;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03) !important;
+  }
+  .m-inp:focus {
+    border-color: var(--ac) !important;
+    box-shadow: 0 0 0 2px var(--ac2) !important;
+  }
+
+  /* 3. 모바일 결과값 칸 폰트 크기 동기화 */
+  .m-val {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    padding: 10px 12px !important;
+    min-height: 40px !important;
+  }
+
+  /* 4. 항목명 라벨 진하게 변경 */
+  .m-lbl {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: var(--tx) !important; /* 회색 대신 완전 진한 색상으로 */
+    margin-bottom: 5px !important;
+  }
+  
+  .m-field { gap: 4px !important; margin-bottom: 6px !important; }
 }
 @media(max-width:480px){
   .cards{grid-template-columns:repeat(2,1fr);}
@@ -273,9 +318,9 @@ tfoot td.nm{font-family:var(--sans);color:var(--tx2);font-size:11px;padding-left
     <button class="btn sm" onclick="addRow()">＋ <span>종목 추가</span></button>
     <button class="btn sm ac" onclick="saveCSV()">⬇ <span>CSV 저장</span></button>
     <label class="btn sm gn" style="cursor:pointer;" title="CSV 불러오기">
-  ⬆ <span>불러오기</span>
-  <input type="file" accept=".csv, text/csv, application/csv, application/vnd.ms-excel" id="csvFile" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;" onchange="loadCSV(event)">
-</label>
+      ⬆ <span>불러오기</span>
+      <input type="file" accept=".csv, text/csv, application/csv, application/vnd.ms-excel" id="csvFile" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;" onchange="loadCSV(event)">
+    </label>
     <button class="btn sm dn" onclick="resetAll()">↺ <span>초기화</span></button>
   </div>
 </header>
@@ -354,20 +399,17 @@ function toast(msg){
 /* ── 계산 핵심 (100단위 반올림 적용) ── */
 function calcValues(b,c,f,g,k){
   const d   = b>0&&c>0 ? b*c : 0;
-  // 1차 4% 판매가: 100원 단위 반올림
   const e   = b>0 ? Math.round((b*1.04)/100)*100 : '';
   
   const jv  = f>0 ? Math.round(f*0.9) : 0;
   const h   = f>0&&g>0 ? f*g : 0;
   
-  // 2차 판매가: 100원 단위 반올림
   const i   = (f>0&&g>0&&c>0) ? Math.round(((b*c+f*g)*1.04/(c+g))/100)*100 : '';
   
   const l   = jv>0&&k>0 ? jv*k : 0;
   const tq3 = c+(g||0)+(k||0);
   const ta3 = b*c+(f>0&&g>0?f*g:0)+(jv>0&&k>0?jv*k:0);
   
-  // 3차 판매가: 100원 단위 반올림
   const m   = jv>0&&k>0&&tq3>0 ? Math.round((ta3*1.04/tq3)/100)*100 : '';
   
   const tq  = c+(f>0&&g>0?g:0)+(jv>0&&k>0?k:0);
@@ -411,11 +453,9 @@ function applyData(id,data){
   const set=(f,v)=>{const el=document.getElementById(f+id);if(el&&v!=null&&v!=='')el.value=v;};
   set('nm',data.name); set('b',data.b); set('c',data.c);
   set('f',data.f); set('g',data.g); set('k',data.k);
-  // 모바일에도 적용
   const mset=(f,v)=>{const el=document.getElementById('m'+f+id);if(el&&v!=null&&v!=='')el.value=v;};
   mset('nm',data.name); mset('b',data.b); mset('c',data.c);
   mset('f',data.f); mset('g',data.g); mset('k',data.k);
-  // 모바일 헤더 이름
   const mhdr=document.getElementById('mhdr-nm'+id);
   if(mhdr&&data.name) mhdr.value=data.name;
   calc(id);
@@ -463,7 +503,6 @@ function addMCard(id){
   ml.appendChild(div);
 }
 
-/* ── 이름 동기화 ── */
 function onNamePC(id){
   const v=document.getElementById('nm'+id)?.value||'';
   const mh=document.getElementById('mhdr-nm'+id); if(mh) mh.value=v;
@@ -475,14 +514,12 @@ function onNameMob(id){
   autoSave();
 }
 
-/* ── 모바일 입력 → PC 동기화 → 계산 ── */
 function syncMob(field,id){
   const mv=document.getElementById('m'+field+id)?.value||'';
   const pc=document.getElementById(field+id); if(pc) pc.value=mv;
   calc(id);
 }
 
-/* ── 계산 & 렌더 ── */
 function calc(id){
   const b=unf(document.getElementById('b'+id)?.value);
   const c=unf(document.getElementById('c'+id)?.value);
@@ -491,17 +528,14 @@ function calc(id){
   const k=unf(document.getElementById('k'+id)?.value);
   const v=calcValues(b,c,f,g,k);
 
-  // PC 셀 렌더
   const s=(sel,val)=>{const el=document.getElementById(sel+id);if(el)el.textContent=fmt(val)||'';};
   s('d',v.d);s('e',v.e);s('j',v.jv);s('h',v.h);s('i',v.i);
   s('l',v.l);s('m',v.m);s('n',v.tq);s('o',v.ta);s('p',v.avg);
 
-  // 모바일 값 렌더
   const ms=(pre,val)=>{const el=document.getElementById('m'+pre+id);if(el)el.textContent=fmt(val)||'';};
   ms('d',v.d);ms('e',v.e);ms('j',v.jv);ms('h',v.h);ms('i',v.i);
   ms('l',v.l);ms('m',v.m);ms('n',v.tq);ms('o',v.ta);ms('p',v.avg);
 
-  // PC → 모바일 입력값 역동기화 (비포커스 상태만)
   ['b','c','f','g','k'].forEach(field=>{
     const pc=document.getElementById(field+id);
     const mob=document.getElementById('m'+field+id);
@@ -512,7 +546,6 @@ function calc(id){
   autoSave();
 }
 
-/* ── 행 삭제 ── */
 function delRow(id){
   document.getElementById('row-'+id)?.remove();
   document.getElementById('mc-'+id)?.remove();
@@ -520,7 +553,6 @@ function delRow(id){
   updateSummary(); autoSave();
 }
 
-/* ── 요약 & 합계행 ── */
 function updateSummary(){
   let cnt=0,a1=0,a2=0,a3=0,tq=0,ta=0;
   rowIds.forEach(id=>{
@@ -552,7 +584,6 @@ function updateSummary(){
     <td>${fmt(tq)}</td><td>${fmt(ta)}</td><td></td><td></td></tr>`;
 }
 
-/* ── 초기화 ── */
 function resetAll(){
   if(!confirm('전체 데이터를 초기화합니까?')) return;
   rowIds=[];uid=0;
@@ -563,7 +594,6 @@ function resetAll(){
   updateSummary(); autoSave();
 }
 
-/* ── CSV 저장 ── */
 function saveCSV(){
   const hdr=['종목명','1차단가','1차수량','1차총액','1차판매가',
              '2차단가','2차수량','2차총액','2차판매가',
@@ -588,7 +618,6 @@ function saveCSV(){
   toast('CSV 파일이 저장되었습니다.');
 }
 
-/* ── CSV 불러오기 ── */
 function loadCSV(e){
   const file=e.target.files[0]; if(!file) return;
   const reader=new FileReader();
@@ -623,7 +652,6 @@ function loadCSV(e){
   e.target.value='';
 }
 
-/* ── 자동저장 (localStorage) ── */
 let saveTimer=null;
 function autoSave(){
   clearTimeout(saveTimer);
@@ -661,14 +689,12 @@ function loadSaved(){
   }catch(e){return false;}
 }
 
-/* ── 테마 ── */
 function setTheme(t){
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('smc_theme',t);
   document.querySelectorAll('.tbtn').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
 }
 
-/* ── 초기 실행 ── */
 setTheme(localStorage.getItem('smc_theme')||'light');
 if(!loadSaved()){
   addRow();
