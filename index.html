@@ -2,109 +2,70 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>종목 매수 계산기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 /* ── 테마 1: 다크 (기본) ── */
 :root, [data-theme="dark"] {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #22263a;
-  --border: #2e3348;
-  --border2: #3d4260;
-  --text: #e8eaf0;
-  --text2: #8b90a8;
-  --text3: #555c7a;
-  --accent: #4f8ef7;
-  --accent-dim: #1e3a6e;
-  --green: #34c77b;
-  --green-dim: #0d3320;
-  --amber: #f5a623;
-  --amber-dim: #3a2500;
-  --red: #e05a5a;
-  --red-dim: #3a1010;
-  --purple: #9b6dff;
-  --purple-dim: #251a4a;
-  --teal: #2dd4bf;
-  --teal-dim: #0a2e2a;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Noto Sans KR', sans-serif;
+  --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
+  --border: #2e3348; --border2: #3d4260;
+  --text: #e8eaf0; --text2: #8b90a8; --text3: #555c7a;
+  --accent: #4f8ef7; --accent-dim: #1e3a6e;
+  --green: #34c77b; --green-dim: #0d3320;
+  --amber: #f5a623; --amber-dim: #3a2500;
+  --red: #e05a5a; --red-dim: #3a1010;
+  --purple: #9b6dff; --purple-dim: #251a4a;
+  --teal: #2dd4bf; --teal-dim: #0a2e2a;
+  --mono: 'JetBrains Mono', monospace; --sans: 'Noto Sans KR', sans-serif;
   --r: 8px; --r2: 12px;
   --g1-bg:#1e2540; --g1-c:#4f8ef7;
   --g2-bg:#152233; --g2-c:#5bb3f5;
   --g3-bg:#0d2b1c; --g3-c:#34c77b;
   --g4-bg:#2a1010; --g4-c:#e05a5a;
   --g5-bg:#1e1430; --g5-c:#9b6dff;
-  --inp-bg:#1c2035; --inp-focus:#252a45;
-  --foot-bg:#1a1d27;
+  --inp-bg:#1c2035; --inp-focus:#252a45; --foot-bg:#1a1d27;
 }
 /* ── 테마 2: 라이트 ── */
 [data-theme="light"] {
-  --bg: #f4f6fa;
-  --surface: #ffffff;
-  --surface2: #f0f2f7;
-  --border: #d8dce8;
-  --border2: #bec4d8;
-  --text: #1a1e2e;
-  --text2: #5a6180;
-  --text3: #9aa0b8;
-  --accent: #1a63d8;
-  --accent-dim: #dde9ff;
-  --green: #1a8a4a;
-  --green-dim: #e6f8ee;
-  --amber: #c47500;
-  --amber-dim: #fff8e6;
-  --red: #c43030;
-  --red-dim: #fdeaea;
-  --purple: #6940d0;
-  --purple-dim: #f0ebff;
-  --teal: #0a9080;
-  --teal-dim: #e4f8f6;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Noto Sans KR', sans-serif;
+  --bg: #f4f6fa; --surface: #ffffff; --surface2: #f0f2f7;
+  --border: #d8dce8; --border2: #bec4d8;
+  --text: #1a1e2e; --text2: #5a6180; --text3: #9aa0b8;
+  --accent: #1a63d8; --accent-dim: #dde9ff;
+  --green: #1a8a4a; --green-dim: #e6f8ee;
+  --amber: #c47500; --amber-dim: #fff8e6;
+  --red: #c43030; --red-dim: #fdeaea;
+  --purple: #6940d0; --purple-dim: #f0ebff;
+  --teal: #0a9080; --teal-dim: #e4f8f6;
+  --mono: 'JetBrains Mono', monospace; --sans: 'Noto Sans KR', sans-serif;
   --r: 8px; --r2: 12px;
   --g1-bg:#1a3a7a; --g1-c:#ffffff;
   --g2-bg:#1a5276; --g2-c:#ffffff;
   --g3-bg:#1a6b3a; --g3-c:#ffffff;
   --g4-bg:#8b1a1a; --g4-c:#ffffff;
   --g5-bg:#4a2080; --g5-c:#ffffff;
-  --inp-bg:#eef2ff; --inp-focus:#dde6ff;
-  --foot-bg:#eef2ff;
+  --inp-bg:#eef2ff; --inp-focus:#dde6ff; --foot-bg:#eef2ff;
 }
 /* ── 테마 3: 민트/그린 ── */
 [data-theme="mint"] {
-  --bg: #f0faf6;
-  --surface: #ffffff;
-  --surface2: #e8f7f0;
-  --border: #c0e4d4;
-  --border2: #90ccb4;
-  --text: #0d2b1e;
-  --text2: #3a6e54;
-  --text3: #7ab09a;
-  --accent: #0a8f5c;
-  --accent-dim: #d4f2e6;
-  --green: #068044;
-  --green-dim: #d0f0e2;
-  --amber: #b86a00;
-  --amber-dim: #fef3e0;
-  --red: #b83030;
-  --red-dim: #fde8e8;
-  --purple: #5e3fba;
-  --purple-dim: #ece6ff;
-  --teal: #0a7a70;
-  --teal-dim: #d8f4f2;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Noto Sans KR', sans-serif;
+  --bg: #f0faf6; --surface: #ffffff; --surface2: #e8f7f0;
+  --border: #c0e4d4; --border2: #90ccb4;
+  --text: #0d2b1e; --text2: #3a6e54; --text3: #7ab09a;
+  --accent: #0a8f5c; --accent-dim: #d4f2e6;
+  --green: #068044; --green-dim: #d0f0e2;
+  --amber: #b86a00; --amber-dim: #fef3e0;
+  --red: #b83030; --red-dim: #fde8e8;
+  --purple: #5e3fba; --purple-dim: #ece6ff;
+  --teal: #0a7a70; --teal-dim: #d8f4f2;
+  --mono: 'JetBrains Mono', monospace; --sans: 'Noto Sans KR', sans-serif;
   --r: 8px; --r2: 12px;
   --g1-bg:#0a4a2e; --g1-c:#ffffff;
   --g2-bg:#0d6644; --g2-c:#ffffff;
   --g3-bg:#056035; --g3-c:#ffffff;
   --g4-bg:#7a2020; --g4-c:#ffffff;
   --g5-bg:#3a2080; --g5-c:#ffffff;
-  --inp-bg:#e4f6ed; --inp-focus:#d0f0e4;
-  --foot-bg:#e0f5ea;
+  --inp-bg:#e4f6ed; --inp-focus:#d0f0e4; --foot-bg:#e0f5ea;
 }
 
 /* 기본 및 PC 공통 스타일 */
@@ -213,8 +174,8 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
 .guide-item strong { color: var(--text); font-weight: 600; }
 .guide-item code { font-family: var(--mono); font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 3px; color: var(--accent); }
 
-/* ── MOBILE RESPONSIVE (세로형 카드 레이아웃) ── */
-@media(max-width: 768px) {
+/* ── 강제 모바일 대응 (Responsive Card Layout) ── */
+@media(max-width: 820px) {
   header { flex-direction: column; align-items: flex-start; gap: 14px; padding: 14px 16px; }
   .header-right { width: 100%; display: flex; overflow-x: auto; padding-bottom: 4px; gap: 8px; justify-content: flex-start; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .header-right::-webkit-scrollbar { display: none; }
@@ -224,80 +185,55 @@ tfoot tr td.sep { border-right: 1px solid var(--border); }
   .card { padding: 12px; }
   .card-value { font-size: 16px; }
 
-  /* 테이블 속성 초기화 및 블록화 */
-  .tbl-wrap { border: none; background: transparent; overflow: hidden; }
-  table, thead, tbody, th, td, tr { display: block; width: 100%; min-width: auto; }
-  
-  /* 테이블 헤더/푸터 모바일에서 숨김 */
-  thead, tfoot { display: none; }
+  .tbl-wrap { border: none !important; background: transparent !important; overflow: hidden !important; }
+  table { min-width: 0 !important; display: block !important; border: none !important; }
+  thead, tfoot { display: none !important; }
+  tbody { display: block !important; width: 100% !important; }
 
-  /* 개별 행(Row)을 카드(Card) 스타일로 변경 */
   tbody tr {
-    margin-bottom: 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r2);
-    padding: 16px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: block !important; margin-bottom: 16px !important;
+    background: var(--surface) !important; border: 1px solid var(--border) !important;
+    border-radius: var(--r2) !important; padding: 16px !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
   }
 
-  /* 셀(Cell)을 세로 리스트 형태로 배치 */
   tbody td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: right;
-    padding: 10px 0;
-    border-bottom: 1px dashed var(--border);
-    border-right: none !important; /* PC용 세로 구분선 제거 */
+    display: flex !important; justify-content: space-between !important;
+    align-items: center !important; text-align: right !important;
+    padding: 10px 0 !important; border-bottom: 1px dashed var(--border) !important;
+    border-right: none !important; width: 100% !important; min-width: 0 !important;
   }
-  tbody td:last-child { border-bottom: none; }
+  tbody td:last-child { border-bottom: none !important; }
 
-  /* data-label 속성을 이용해 항목명 표시 */
   tbody td::before {
-    content: attr(data-label);
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text2);
-    text-align: left;
-    flex-shrink: 0;
-    margin-right: 15px;
+    content: attr(data-label); font-family: var(--sans); font-size: 12px;
+    font-weight: 600; color: var(--text2); text-align: left;
+    flex-shrink: 0; margin-right: 15px;
   }
 
-  /* 카드 내 입력창 최적화 */
   td:has(input) { background: transparent !important; }
   input[type=text] {
-    width: 65%; /* 입력창 너비 고정 */
-    background: var(--inp-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 14px; /* iOS 자동 확대 방지 */
+    width: 60% !important; background: var(--inp-bg) !important;
+    border: 1px solid var(--border) !important; border-radius: 4px !important;
+    padding: 8px 10px !important; font-size: 14px !important;
   }
-  input[type=text]:focus { border-color: var(--accent); }
-  input[type=text].name-inp { width: 100%; text-align: right; }
+  input[type=text]:focus { border-color: var(--accent) !important; }
+  input[type=text].name-inp { width: 100% !important; text-align: right !important; }
 
-  /* 모바일 가독성을 위한 시각적 그룹 분리 (상단 테두리 부여) */
   td[data-label="[1차] 매수단가"], 
   td[data-label="[2차] 매수단가"], 
   td[data-label="[3차] 자동단가"], 
-  td[data-label="[합산] 총 수량"] {
-    border-top: 2px solid var(--border2);
-    margin-top: 8px;
-    padding-top: 14px;
+  td[data-label="[합산] 총 수량(주)"] {
+    border-top: 2px solid var(--border2) !important;
+    margin-top: 8px !important; padding-top: 14px !important;
   }
   
-  /* 삭제 버튼 크게 배치 */
   .del-btn {
-    width: 100%;
-    background: var(--red-dim);
-    color: var(--red);
-    border-radius: var(--r);
-    padding: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 10px;
+    width: 100% !important; background: var(--red-dim) !important;
+    color: var(--red) !important; border-radius: var(--r) !important;
+    padding: 10px !important; font-size: 13px !important;
+    font-weight: 600 !important; margin-top: 10px !important;
+    border: 1px solid var(--red) !important;
   }
 }
 </style>
@@ -422,7 +358,6 @@ function addRow(data) {
   const tr = document.createElement('tr');
   tr.id = 'row-'+id;
   
-  // 모든 td에 모바일 표시용 data-label 속성 추가
   tr.innerHTML = `
     <td class="name-cell sep" data-label="📌 종목명"><input type="text" class="name-inp" placeholder="종목명 입력" id="name${id}"></td>
     <td data-label="[1차] 매수단가"><input type="text" id="b${id}" placeholder="0" oninput="formatInput(this, ${id})"></td>
@@ -547,6 +482,7 @@ function resetAll() {
   updateSummary();
 }
 
+/* --- 모바일 호환성 대응 업데이트된 다운로드 로직 --- */
 function saveCSV() {
   const headers = ['종목명','1차단가','1차수량','1차총액','1차판매가','2차단가','2차수량','2차총액','2차판매가','3차단가','3차수량','3차총액','3차판매가','합산수량','합산총액','평균단가'];
   const rows = [headers.join(',')];
@@ -571,11 +507,23 @@ function saveCSV() {
     
     if (name || b) rows.push([name,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p].join(','));
   });
+  
   const blob = new Blob(['\uFEFF'+rows.join('\n')], {type:'text/csv;charset=utf-8;'});
+  const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  
+  a.href = url;
   a.download = '종목매수계산기_' + new Date().toISOString().slice(0,10) + '.csv';
+  
+  // 모바일 브라우저를 위해 DOM 트리에 강제 추가 후 클릭 실행
+  document.body.appendChild(a);
   a.click();
+  
+  // 클릭 완료 후 요소 제거 및 메모리 해제
+  setTimeout(() => {
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }, 100);
 }
 
 function loadCSV(event) {
