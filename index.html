@@ -441,15 +441,15 @@ function toast(msg) {
 
 /* ══════ 계산 핵심 ══════ */
 function calcValues(b, c, f, g, k) {
-  const d   = b > 0 && c > 0 ? b * c : 0;
-  const e   = b > 0 ? Math.round(b * 1.04) : '';
+ const d   = b > 0 && c > 0 ? b * c : 0;
+  const e   = b > 0 ? Math.round((b * 1.04) / 100) * 100 : '';
   const jv  = f > 0 ? Math.round(f * 0.9) : 0;
   const h   = f > 0 && g > 0 ? f * g : 0;
-  const i   = (f > 0 && g > 0 && c > 0) ? Math.round((b*c + f*g) * 1.04 / (c + g)) : '';
+  const i   = (f > 0 && g > 0 && c > 0) ? Math.round(((b*c + f*g) * 1.04 / (c + g)) / 100) * 100 : '';
   const l   = jv > 0 && k > 0 ? jv * k : 0;
   const tq3 = c + (g || 0) + (k || 0);
   const ta3 = b*c + (f>0&&g>0 ? f*g : 0) + (jv>0&&k>0 ? jv*k : 0);
-  const m   = jv > 0 && k > 0 && tq3 > 0 ? Math.round(ta3 * 1.04 / tq3) : '';
+  const m   = jv > 0 && k > 0 && tq3 > 0 ? Math.round((ta3 * 1.04 / tq3) / 100) * 100 : '';
   const tq  = c + (f>0&&g>0 ? g : 0) + (jv>0&&k>0 ? k : 0);
   const ta  = b*c + (f>0&&g>0 ? f*g : 0) + (jv>0&&k>0 ? jv*k : 0);
   const avg = tq > 0 && ta > 0 ? Math.round(ta / tq) : '';
@@ -804,7 +804,10 @@ function setTheme(t) {
   localStorage.setItem('smc_theme', t);
   document.querySelectorAll('.tbtn').forEach(b => b.classList.toggle('on', b.dataset.t === t));
 }
-
+/* ══════ 마우스 우클릭 방지 ══════ */
+document.addEventListener('contextmenu', function(event) {
+  event.preventDefault();
+});
 /* ══════ 초기 실행 ══════ */
 setTheme(localStorage.getItem('smc_theme') || 'light');
 if (!loadSaved()) {
